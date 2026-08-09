@@ -42,6 +42,12 @@ Fileless:
 powershell -ExecutionPolicy Bypass -Command "Invoke-Expression (Invoke-RestMethod ('https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/FilelessDetector.ps1?cb=' + [guid]::NewGuid()))"
 ```
 
+**Tools hub** (GUI — OrbDiff / Spokwn / Zimmerman / NirSoft + наши скрипты):
+
+```bat
+powershell -NoProfile -STA -ExecutionPolicy Bypass -Command "Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/SchwarzahnTools.ps1')"
+```
+
 Шаблон для любого скрипта из репо:
 
 ```bat
@@ -51,6 +57,12 @@ powershell -ExecutionPolicy Bypass -Command "Invoke-Expression (Invoke-RestMetho
 ---
 
 ## Arsenal
+
+### Tools hub
+
+| Script | Role | Admin | CMD one-liner |
+|:--|:--|:--:|:--|
+| [`SchwarzahnTools.ps1`](SchwarzahnTools.ps1) + [`ToolsCatalog.json`](ToolsCatalog.json) | GUI hub: download/launch OrbDiff·Spokwn·Zimmerman·NirSoft + Schwarzahn scripts | yes | STA one-liner above |
 
 ### Core triage
 
