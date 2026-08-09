@@ -63,6 +63,7 @@ irm https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/S
 |:--|:--|:--:|:--|
 | [`Streams.ps1`](Streams.ps1) | **ADS** / Zone.Identifier scanner | — | `irm .../Streams.ps1 \| iex` |
 | [`AdvancedArtifacts.ps1`](AdvancedArtifacts.ps1) | RecentFileCache · SRUM · Shimcache · PS fileless hints · WinRAR ArcHistory · VM | yes | `irm .../AdvancedArtifacts.ps1 \| iex` |
+| [`FilelessDetector.ps1`](FilelessDetector.ps1) | Fileless + AMSI-bypass **detection** (PS logs, history, LOLBins, 4688) | yes | `irm .../FilelessDetector.ps1 \| iex` |
 | [`CommonDirectories.ps1`](CommonDirectories.ps1) | Common SS directories snapshot | — | `irm .../CommonDirectories.ps1 \| iex` |
 | [`HotspotLogs.ps1`](HotspotLogs.ps1) | Mobile Hotspot / ICS / WLAN events | yes | `irm .../HotspotLogs.ps1 \| iex` |
 | [`ManualTasks.ps1`](ManualTasks.ps1) | Scheduled tasks for current user | — | `irm .../ManualTasks.ps1 \| iex` |
