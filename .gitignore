@@ -10,3 +10,4 @@ hub/**/obj/
 hub-build/
 *.user
 .vs/
+hub/**/publish/
