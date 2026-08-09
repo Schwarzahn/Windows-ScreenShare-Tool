@@ -103,41 +103,71 @@ function Test-IsAdmin {
     return $p.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
 
-# Detection needles — strings only (no bypass payloads)
-$script:NeedleList = @(
-    # classic fileless loaders
-    'FromBase64String','IEX ','IEX(','Invoke-Expression','Invoke-Command',
-    'DownloadString','DownloadFile','DownloadData','Net.WebClient','WebClient',
-    'Start-BitsTransfer','bitsadmin','Invoke-RestMethod','Invoke-WebRequest','iwr ','curl ',
-    '-enc ','-EncodedCommand','-e ','-ec ',
+# Tight needles — avoid short junk like bare "etw" / "bypass" / "Patch" (huge FPs in Defender logs)
+$script:NeedleStrong = @(
+    'FromBase64String','IEX(','IEX ','Invoke-Expression',
+    'DownloadString','DownloadFile','DownloadData','Net.WebClient',
+    'Start-BitsTransfer','bitsadmin',
+    '-EncodedCommand',' -enc ',' -e  ',' -ec ',
     'Reflection.Assembly','Assembly.Load','Load([byte','VirtualAlloc','WriteProcessMemory',
-    'CreateThread','Marshal::Copy','System.Runtime.InteropServices',
-    # AMSI / ETW bypass indicators (names / keywords in logs — not exploit code)
-    'AmsiUtils','amsiInitFailed','amsiContext','AmsiScanBuffer','amsi.dll',
-    'Patch','amsiContext','System.Management.Automation.AmsiUtils',
-    'EtwEventWrite','etw','DisableRealtimeMonitoring',
-    'Set-MpPreference','ExclusionPath','ExclusionProcess',
-    # LOLBins / hosts
-    'mshta','hta:','javascript:','vbscript:',
-    'rundll32','regsvr32','scrobj','InstallUtil','PresentationHost',
-    'wmic process call create','Win32_Process','Invoke-WmiMethod',
-    'powershell -w hidden','-WindowStyle Hidden','-nop','-NoProfile',
-    'bypass','Unrestricted','ExecutionPolicy',
-    # password trick / history evasion
+    'CreateRemoteThread','Marshal::Copy',
+    'AmsiUtils','amsiInitFailed','amsiContext','AmsiScanBuffer',
+    'System.Management.Automation.AmsiUtils','EtwEventWrite',
+    'DisableRealtimeMonitoring','DisableIOAVProtection','ExclusionPath','ExclusionProcess',
+    'mshta http','mshta https','hta:application','javascript:','vbscript:',
+    'regsvr32 /s /n /u /i:','scrobj.dll',
+    'wmic process call create','Invoke-WmiMethod',
+    'powershell -w hidden','-WindowStyle Hidden',
     '# password','#password',
-    # SS / cheat adjacent
-    'doomsday','javaw','inject','reflective'
+    'reflective dll','ReflectiveLoader'
 )
+
+# Weaker — only count if paired with another signal (or alone in cmdline of LOLBin)
+$script:NeedleWeak = @(
+    'Invoke-RestMethod','Invoke-WebRequest','iwr ',
+    'Set-MpPreference','Unrestricted',
+    'InstallUtil','PresentationHost'
+)
+
+# Ignore our own SS tooling / this detector (otherwise every irm|iex self-flags)
+$script:IgnoreSubstrings = @(
+    'Windows-ScreenShare-Tool','FilelessDetector','DoomsDayDetector','AdvancedArtifacts',
+    'Service-Enabler','Schwarzahn/Windows','ScreenShare-Tool-by-Schwarzahn',
+    'raw.githubusercontent.com/Schwarzahn'
+)
+
+function Test-IsSelfNoise([string]$Text) {
+    if ([string]::IsNullOrWhiteSpace($Text)) { return $false }
+    foreach ($x in $script:IgnoreSubstrings) {
+        if ($Text.IndexOf($x, [StringComparison]::OrdinalIgnoreCase) -ge 0) { return $true }
+    }
+    return $false
+}
 
 function Test-SuspiciousText([string]$Text) {
     if ([string]::IsNullOrWhiteSpace($Text)) { return @() }
-    $hits = @()
-    foreach ($n in $script:NeedleList) {
+    if (Test-IsSelfNoise $Text) { return @() }
+
+    $hits = New-Object System.Collections.Generic.List[string]
+    foreach ($n in $script:NeedleStrong) {
         if ($Text.IndexOf($n, [StringComparison]::OrdinalIgnoreCase) -ge 0) {
-            $hits += $n
+            [void]$hits.Add($n.Trim())
         }
     }
-    return ($hits | Select-Object -Unique)
+    $weakHits = @()
+    foreach ($n in $script:NeedleWeak) {
+        if ($Text.IndexOf($n, [StringComparison]::OrdinalIgnoreCase) -ge 0) {
+            $weakHits += $n.Trim()
+        }
+    }
+    # Weak alone is noise (Defender logs / SS irm). Keep only if strong already hit OR 2+ weak.
+    if ($hits.Count -gt 0) {
+        foreach ($w in $weakHits) { [void]$hits.Add($w) }
+    } elseif ($weakHits.Count -ge 2) {
+        foreach ($w in $weakHits) { [void]$hits.Add($w) }
+    }
+
+    return @($hits | Select-Object -Unique)
 }
 
 function Format-Clip([string]$s, [int]$Max = 140) {
@@ -162,7 +192,7 @@ Write-KV 'PC' $env:COMPUTERNAME
 Write-KV 'User' $env:USERNAME
 Write-KV 'Now' (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
 Write-Info 'Fileless = mostly RAM. Disk logs help; wiped logs → RAM dump.'
-Write-Info 'Gemini summary is correct: AMSI bypass + PS/WMI living-off-the-land.'
+Write-Info 'Self irm|iex of Schwarzahn tools is ignored (not a hit).'
 
 # ----- Logging posture -----
 Write-Section 'POWERSHELL LOGGING STATE'
@@ -234,6 +264,10 @@ try {
     } else {
         foreach ($p in $procs) {
             $cmd = [string]$p.CommandLine
+            if (Test-IsSelfNoise $cmd) {
+                Write-Info ("PID={0} {1} :: (SS tool — ignored)" -f $p.ProcessId, $p.Name)
+                continue
+            }
             $matched = Test-SuspiciousText $cmd
             $line = "PID=$($p.ProcessId) $($p.Name) :: $(Format-Clip $cmd 120)"
             if ($matched.Count -gt 0) {
