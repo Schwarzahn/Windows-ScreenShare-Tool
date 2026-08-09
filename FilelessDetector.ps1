@@ -122,11 +122,11 @@ $script:NeedleStrong = @(
     'reflective dll','ReflectiveLoader'
 )
 
-# Weaker — only count if paired with another signal (or alone in cmdline of LOLBin)
+# Weaker — only count if paired with strong signal already (never alone)
+# NOTE: irm / Invoke-RestMethod / iwr / Invoke-WebRequest are NOT indicators
+# (every SS one-liner uses them — pure noise)
 $script:NeedleWeak = @(
-    'Invoke-RestMethod','Invoke-WebRequest','iwr ',
-    'Set-MpPreference','Unrestricted',
-    'InstallUtil','PresentationHost'
+    'Set-MpPreference'
 )
 
 # Ignore our own SS tooling / this detector (otherwise every irm|iex self-flags)
