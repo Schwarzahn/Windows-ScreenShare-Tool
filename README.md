@@ -24,17 +24,28 @@ Blood console UI. One-liner run. Corroboration-first: services → BAM/Prefetch 
 
 ## Quick start
 
-Open **PowerShell as Administrator**, then paste:
+**CMD as Administrator** (так и вставляй):
 
-```powershell
-# Core — services, Prefetch/BAM pulse, PS logging, verdict
-irm https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/Services.ps1 | iex
+```bat
+powershell -ExecutionPolicy Bypass -Command "Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/Services.ps1')"
 ```
 
 Heal cured / disabled critical services first (when needed):
 
-```powershell
-irm https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/Service-Enabler.ps1 | iex
+```bat
+powershell -ExecutionPolicy Bypass -Command "Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/Service-Enabler.ps1')"
+```
+
+Fileless / AMSI-bypass detector:
+
+```bat
+powershell -ExecutionPolicy Bypass -Command "Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/FilelessDetector.ps1')"
+```
+
+Шаблон для любого скрипта из репо:
+
+```bat
+powershell -ExecutionPolicy Bypass -Command "Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/ИМЯ.ps1')"
 ```
 
 ---
@@ -43,34 +54,35 @@ irm https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/S
 
 ### Core triage
 
-| Script | Role | Admin | One-liner |
+| Script | Role | Admin | CMD one-liner |
 |:--|:--|:--:|:--|
-| [`Services.ps1`](Services.ps1) | Compact **SERVICE STATUS**, disks, BAM/Prefetch, PowerShell logging, events, verdict | yes | `irm .../Services.ps1 \| iex` |
-| [`Service-Enabler.ps1`](Service-Enabler.ps1) | Enable critical SS services + Prefetch, then VERIFY | yes | `irm .../Service-Enabler.ps1 \| iex` |
-| [`BamViewer.ps1`](BamViewer.ps1) | Full BAM path / time / exists / signature view | yes | `irm .../BamViewer.ps1 \| iex` |
+| [`Services.ps1`](Services.ps1) | Compact **SERVICE STATUS**, disks, BAM/Prefetch, PowerShell logging, events, verdict | yes | `…/Services.ps1` |
+| [`Service-Enabler.ps1`](Service-Enabler.ps1) | Enable critical SS services + Prefetch, then VERIFY | yes | `…/Service-Enabler.ps1` |
+| [`BamViewer.ps1`](BamViewer.ps1) | Full BAM path / time / exists / signature view | yes | `…/BamViewer.ps1` |
 
 ### Execution & client
 
-| Script | Role | Admin | One-liner |
+| Script | Role | Admin | CMD one-liner |
 |:--|:--|:--:|:--|
-| [`DoomsDayDetector.ps1`](DoomsDayDetector.ps1) | Doomsday-style client scanner (USN / Prefetch traces) | — | `irm .../DoomsDayDetector.ps1 \| iex` |
-| [`ModAnalyzer.ps1`](ModAnalyzer.ps1) | Mods: Modrinth / Megabase / string hits | — | `irm .../ModAnalyzer.ps1 \| iex` |
-| [`SignaturesParser.ps1`](SignaturesParser.ps1) | Signature / hash style parsing for SS | yes | `irm .../SignaturesParser.ps1 \| iex` |
+| [`DoomsDayDetector.ps1`](DoomsDayDetector.ps1) | Doomsday-style client scanner (USN / Prefetch traces) | — | `…/DoomsDayDetector.ps1` |
+| [`ModAnalyzer.ps1`](ModAnalyzer.ps1) | Mods: Modrinth / Megabase / string hits | — | `…/ModAnalyzer.ps1` |
+| [`SignaturesParser.ps1`](SignaturesParser.ps1) | Signature / hash style parsing for SS | yes | `…/SignaturesParser.ps1` |
 
 ### Artifacts & surface
 
-| Script | Role | Admin | One-liner |
+| Script | Role | Admin | CMD one-liner |
 |:--|:--|:--:|:--|
-| [`Streams.ps1`](Streams.ps1) | **ADS** / Zone.Identifier scanner | — | `irm .../Streams.ps1 \| iex` |
-| [`AdvancedArtifacts.ps1`](AdvancedArtifacts.ps1) | RecentFileCache · SRUM · Shimcache · PS fileless hints · WinRAR ArcHistory · VM | yes | `irm .../AdvancedArtifacts.ps1 \| iex` |
-| [`FilelessDetector.ps1`](FilelessDetector.ps1) | Fileless + AMSI-bypass **detection** (PS logs, history, LOLBins, 4688) | yes | `irm .../FilelessDetector.ps1 \| iex` |
-| [`CommonDirectories.ps1`](CommonDirectories.ps1) | Common SS directories snapshot | — | `irm .../CommonDirectories.ps1 \| iex` |
-| [`HotspotLogs.ps1`](HotspotLogs.ps1) | Mobile Hotspot / ICS / WLAN events | yes | `irm .../HotspotLogs.ps1 \| iex` |
-| [`ManualTasks.ps1`](ManualTasks.ps1) | Scheduled tasks for current user | — | `irm .../ManualTasks.ps1 \| iex` |
-| [`KillScreenProcesses.ps1`](KillScreenProcesses.ps1) | Capture / forbidden process detect & kill | — | `irm .../KillScreenProcesses.ps1 \| iex` |
+| [`Streams.ps1`](Streams.ps1) | **ADS** / Zone.Identifier scanner | — | `…/Streams.ps1` |
+| [`AdvancedArtifacts.ps1`](AdvancedArtifacts.ps1) | RecentFileCache · SRUM · Shimcache · ArcHistory · VM | yes | `…/AdvancedArtifacts.ps1` |
+| [`FilelessDetector.ps1`](FilelessDetector.ps1) | Fileless + AMSI-bypass **detection** (PS logs, history, LOLBins, 4688) | yes | `…/FilelessDetector.ps1` |
+| [`CommonDirectories.ps1`](CommonDirectories.ps1) | Common SS directories snapshot | — | `…/CommonDirectories.ps1` |
+| [`HotspotLogs.ps1`](HotspotLogs.ps1) | Mobile Hotspot / ICS / WLAN events | yes | `…/HotspotLogs.ps1` |
+| [`ManualTasks.ps1`](ManualTasks.ps1) | Scheduled tasks for current user | — | `…/ManualTasks.ps1` |
+| [`KillScreenProcesses.ps1`](KillScreenProcesses.ps1) | Capture / forbidden process detect & kill | — | `…/KillScreenProcesses.ps1` |
 
-> Replace `...` with  
-> `https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main`
+> One-liner =  
+> `powershell -ExecutionPolicy Bypass -Command "Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/<file>')"`  
+> Подставь имя файла вместо `<file>`.
 
 ---
 
@@ -83,8 +95,9 @@ irm https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/S
 4  Streams           (ADS / Zone.Identifier)
 5  ModAnalyzer       (client / mods)
 6  DoomsDayDetector  (when client suspicion)
-7  AdvancedArtifacts (RFC / SRUM / Shim / ArcHistory / VM / fileless)
-8  External EXE      → docs/EXTERNAL-TOOLS.md  (Zimmerman, dumps, Velociraptor…)
+7  FilelessDetector  (PS / AMSI / LOLBin layer)
+8  AdvancedArtifacts (RFC / SRUM / Shim / ArcHistory / VM)
+9  External EXE      → docs/EXTERNAL-TOOLS.md  (Zimmerman, dumps…)
 ```
 
 Corroborate. One artifact ≠ instance. Prefetch + BAM + RFC beats a single string in RAM.
