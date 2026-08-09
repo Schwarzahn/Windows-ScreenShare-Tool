@@ -2,16 +2,14 @@
 <#
 .SYNOPSIS
   Windows ScreenShare Tool — Advanced artifacts quick check
-  RecentFileCache · SRUM · Shimcache · ArcHistory · VM · PowerShell fileless hints
+  RecentFileCache · SRUM · Shimcache · ArcHistory · VM · PS check
   by Schwarzahn
-
-  Does NOT auto-dump RAM/Kernel (heavy, BSOD risk). Prints ready commands.
 #>
 
 $ErrorActionPreference = 'Continue'
 $esc = [char]27
 $script:BrandName = 'Schwarzahn'
-$script:ToolName = 'Windows ScreenShare Tool / Advanced'
+$script:ToolName = 'Advanced'
 
 function Enable-AnsiConsole {
     if ($script:AnsiReady) { return }
@@ -40,7 +38,7 @@ function Get-BloodPalette {
     return $script:BloodPalette
 }
 function Write-BloodBanner {
-    param([string]$Subtitle = 'Advanced artifacts')
+    param([string]$Subtitle = 'Advanced')
     Enable-AnsiConsole; $c = Get-BloodPalette
     $art = @(
         '███████╗ ██████╗██╗  ██╗██╗    ██╗ █████╗ ██████╗ ███████╗ █████╗ ██╗  ██╗███╗   ██╗',
@@ -64,7 +62,7 @@ function Write-BloodBanner {
     Write-Host ''
 }
 function Write-BloodFoot {
-    param([string]$Subtitle = 'Advanced artifacts')
+    param([string]$Subtitle = 'Advanced')
     Enable-AnsiConsole; $c = Get-BloodPalette; $tag = "by $script:BrandName"
     Write-Host ''; Write-Ansi ("$($c.ShadowFar)  $($('═'*64))$($c.Reset)`n")
     Write-Ansi ("$($c.ShadowFar)   $tag$($c.Reset)`n")
@@ -359,7 +357,7 @@ try {
 }
 Write-Info 'Optional: VMAware v2.6.0  https://github.com/kernelwernel/VMAware/releases/tag/v2.6.0'
 
-# ----- PowerShell fileless hints -----
+# ----- PowerShell check -----
 Write-Section 'FILELESS HINTS (Event Viewer / PowerShell)'
 Write-Info 'IDs of interest: 400, 403, 600, 800 (+ Operational script block if enabled)'
 Write-Info 'Password-in-cmdline bypass may hide from console history / some logs — RAM dump then'
@@ -422,4 +420,4 @@ if ($script:SusHits -ge 3) {
     Write-Ok 'No high automated hits — still run Zimmerman parsers for full CSV timeline'
 }
 
-Write-BloodFoot -Subtitle 'Advanced artifacts'
+Write-BloodFoot -Subtitle 'Advanced'

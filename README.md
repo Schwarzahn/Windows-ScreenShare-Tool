@@ -36,7 +36,7 @@ Heal cured / disabled critical services first (when needed):
 powershell -ExecutionPolicy Bypass -Command "Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/Service-Enabler.ps1')"
 ```
 
-Fileless / AMSI-bypass detector:
+Fileless:
 
 ```bat
 powershell -ExecutionPolicy Bypass -Command "Invoke-Expression (Invoke-RestMethod ('https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/FilelessDetector.ps1?cb=' + [guid]::NewGuid()))"
@@ -74,7 +74,7 @@ powershell -ExecutionPolicy Bypass -Command "Invoke-Expression (Invoke-RestMetho
 |:--|:--|:--:|:--|
 | [`Streams.ps1`](Streams.ps1) | **ADS** / Zone.Identifier scanner | — | `…/Streams.ps1` |
 | [`AdvancedArtifacts.ps1`](AdvancedArtifacts.ps1) | RecentFileCache · SRUM · Shimcache · ArcHistory · VM | yes | `…/AdvancedArtifacts.ps1` |
-| [`FilelessDetector.ps1`](FilelessDetector.ps1) | Fileless / wipe **detection** (PS logs, USN history wipe, Prefetch, 1102/104, 4688). RED=hit GREEN=OK | yes | `…/FilelessDetector.ps1` |
+| [`FilelessDetector.ps1`](FilelessDetector.ps1) | PS logs, USN wipe (history/Prefetch), Defender, 4688. Red=hit | yes | `…/FilelessDetector.ps1` |
 | [`CommonDirectories.ps1`](CommonDirectories.ps1) | Common SS directories snapshot | — | `…/CommonDirectories.ps1` |
 | [`HotspotLogs.ps1`](HotspotLogs.ps1) | Mobile Hotspot / ICS / WLAN events | yes | `…/HotspotLogs.ps1` |
 | [`ManualTasks.ps1`](ManualTasks.ps1) | Scheduled tasks for current user | — | `…/ManualTasks.ps1` |
@@ -95,7 +95,7 @@ powershell -ExecutionPolicy Bypass -Command "Invoke-Expression (Invoke-RestMetho
 4  Streams           (ADS / Zone.Identifier)
 5  ModAnalyzer       (client / mods)
 6  DoomsDayDetector  (when client suspicion)
-7  FilelessDetector  (PS / AMSI / LOLBin layer)
+7  FilelessDetector  (PS / USN wipe / Defender)
 8  AdvancedArtifacts (RFC / SRUM / Shim / ArcHistory / VM)
 9  External EXE      → docs/EXTERNAL-TOOLS.md  (Zimmerman, dumps…)
 ```

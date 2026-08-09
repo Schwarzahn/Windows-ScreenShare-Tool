@@ -1,25 +1,14 @@
 #Requires -RunAsAdministrator
 <#
 .SYNOPSIS
-  Windows ScreenShare Tool — Fileless + AMSI-bypass detector
+  Fileless — PS logs, USN wipe (history/Prefetch), Defender surface.
   by Schwarzahn
-
-  Detects (does NOT bypass):
-  - PowerShell / WMI / mshta / rundll32 suspicious cmdlines
-  - Event log hits (Windows PowerShell + Operational)
-  - ScriptBlock / Module logging state
-  - AMSI provider / policy hints
-  - ConsoleHost_history patterns + USN wipe of history / Prefetch / evtx
-  - Event log clears (Security 1102 / System 104)
-  - "# password" style log-suppression trick awareness
-
-  Color: RED = hit only | GREEN = OK. RAM dump still needed for some bypasses.
 #>
 
 $ErrorActionPreference = 'Continue'
 $esc = [char]27
 $script:BrandName = 'Schwarzahn'
-$script:ToolName = 'Fileless / Bypass Detector'
+$script:ToolName = 'Fileless'
 $script:SusHits = 0
 $script:WarnHits = 0
 $script:Hits = New-Object System.Collections.Generic.List[string]
@@ -51,7 +40,7 @@ function Get-BloodPalette {
     return $script:BloodPalette
 }
 function Write-BloodBanner {
-    param([string]$Subtitle = 'Fileless detector')
+    param([string]$Subtitle = 'Fileless')
     Enable-AnsiConsole; $c = Get-BloodPalette
     $art = @(
         '███████╗ ██████╗██╗  ██╗██╗    ██╗ █████╗ ██████╗ ███████╗ █████╗ ██╗  ██╗███╗   ██╗',
@@ -75,7 +64,7 @@ function Write-BloodBanner {
     Write-Host ''
 }
 function Write-BloodFoot {
-    param([string]$Subtitle = 'Fileless detector')
+    param([string]$Subtitle = 'Fileless')
     Enable-AnsiConsole; $c = Get-BloodPalette; $tag = "by $script:BrandName"
     Write-Host ''; Write-Ansi ("$($c.ShadowFar)  $($('═'*64))$($c.Reset)`n")
     Write-Ansi ("$($c.ShadowFar)   $tag$($c.Reset)`n")
@@ -106,9 +95,9 @@ function Test-IsAdmin {
 }
 
 # Detector build — bump so you can see cache bust worked
-$script:DetectorBuild = 'v4-2026-08-09'
+$script:DetectorBuild = 'v5-2026-08-09'
 
-# REAL fileless / injector / wipe signals (short junk like "etw"/"bypass" intentionally absent)
+# REAL injector / wipe signals (no short junk like "etw" / "bypass" / WindowStyle alone)
 $script:NeedleStrong = @(
     'FromBase64String','DownloadString','DownloadFile','DownloadData',
     'Net.WebClient','Start-BitsTransfer','bitsadmin ',
@@ -121,13 +110,12 @@ $script:NeedleStrong = @(
     'mshta http','mshta https','hta:application',
     'regsvr32 /s /n /u /i:','scrobj.dll',
     'wmic process call create',
-    'powershell -w hidden','-WindowStyle Hidden',
     '# password','#password',
     'ReflectiveLoader','reflective dll',
     'Clear-History','wevtutil cl','wevtutil clear-log','Clear-EventLog','Clear-WinEvent'
 )
 
-# Wipe / anti-forensics name hits in USN (filename only)
+# Wipe targets in USN (filename only)
 $script:WipeFileNames = @(
     'ConsoleHost_history.txt','ConsoleHost_history',
     'PowerShell_transcript','RecentFileCache.bcf',
@@ -141,8 +129,8 @@ $script:IgnoreSubstrings = @(
     'Windows-ScreenShare-Tool','FilelessDetector','DoomsDayDetector','AdvancedArtifacts',
     'Service-Enabler','Schwarzahn','ScreenShare-Tool-by-Schwarzahn',
     'raw.githubusercontent.com/Schwarzahn',
-    'Fileless / Bypass Detector','Fileless + AMSI',
-    'NeedleStrong','NeedleWeak','IgnoreSubstrings','DetectorBuild','WipeFileNames','Get-UsnWipeHits'
+    'Write-BloodBanner','Write-Bad','Write-Ok','Write-Warn','Write-Section',
+    'NeedleStrong','IgnoreSubstrings','DetectorBuild','WipeFileNames','Get-UsnWipeHits'
 )
 
 function Test-IsNoise([string]$Text) {
@@ -269,8 +257,6 @@ Write-KV 'PC' $env:COMPUTERNAME
 Write-KV 'User' $env:USERNAME
 Write-KV 'Now' (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
 Write-KV 'Build' $script:DetectorBuild 'Green'
-Write-Ok 'RED = hit only | GREEN = OK / ignored noise'
-Write-Ok 'Also checks USN wipe traces (history / Prefetch / evtx)'
 
 # ----- Logging posture -----
 Write-Section 'POWERSHELL LOGGING STATE'
@@ -282,21 +268,21 @@ try {
     if ($sb -and $sb.EnableScriptBlockLogging -eq 1) {
         Write-Ok 'ScriptBlockLogging = ON (4104 gold)'
     } else {
-        Write-Warn 'ScriptBlockLogging OFF/missing — weaker fileless visibility'
+        Write-Warn 'ScriptBlockLogging OFF'
     }
 } catch { Write-Warn 'Cannot read ScriptBlockLogging policy' }
 
 try {
     $ml = Get-ItemProperty $modKey -ErrorAction SilentlyContinue
     if ($ml -and $ml.EnableModuleLogging -eq 1) { Write-Ok 'ModuleLogging = ON' }
-    else { Write-Ok 'ModuleLogging off (optional — OK)' }
+    else { Write-Ok 'ModuleLogging off' }
 } catch {}
 
 try {
     $tr = Get-ItemProperty $transKey -ErrorAction SilentlyContinue
     if ($tr -and $tr.EnableTranscripting -eq 1) {
         Write-Ok ("Transcription ON  dir={0}" -f $tr.OutputDirectory)
-    } else { Write-Ok 'Transcription off (optional — OK)' }
+    } else { Write-Ok 'Transcription off' }
 } catch {}
 
 try {
@@ -305,7 +291,7 @@ try {
 } catch {}
 
 # ----- AMSI providers -----
-Write-Section 'AMSI / DEFENDER SURFACE'
+Write-Section 'DEFENDER / AMSI'
 $amsiKey = 'HKLM:\SOFTWARE\Microsoft\AMSI\Providers'
 if (Test-Path $amsiKey) {
     $prov = Get-ChildItem $amsiKey -ErrorAction SilentlyContinue
@@ -324,7 +310,7 @@ try {
     if ($mp) {
         Write-KV 'Defender RealTime' ("{0}" -f $mp.RealTimeProtectionEnabled) $(if ($mp.RealTimeProtectionEnabled){'Green'}else{'Red'})
         Write-KV 'AMSI / Antispyware' ("{0}" -f $mp.AntispywareEnabled) $(if ($mp.AntispywareEnabled){'Green'}else{'Red'})
-        if (-not $mp.RealTimeProtectionEnabled) { Write-Bad 'Defender RealTime OFF — common pre-fileless step' }
+        if (-not $mp.RealTimeProtectionEnabled) { Write-Bad 'Defender RealTime OFF' }
         else { Write-Ok 'Defender RealTime ON' }
     } else {
         Write-Ok 'Get-MpComputerStatus unavailable (no Defender / third-party AV)'
@@ -332,7 +318,7 @@ try {
 } catch { Write-Ok 'Defender status unreadable' }
 
 # ----- Wipe traces (USN + event clear) -----
-Write-Section 'WIPE / ANTI-FORENSICS (USN)'
+Write-Section 'USN WIPE'
 $sysDrive = ($env:SystemDrive -replace ':','')
 if ([string]::IsNullOrWhiteSpace($sysDrive)) { $sysDrive = 'C' }
 $usn = Get-UsnWipeHits -DriveLetters @($sysDrive) -MinutesBack 60
@@ -351,7 +337,7 @@ if ($wipeShown -eq 0 -and $usn.PrefetchDeleteCount -lt 8) {
     Write-Ok 'No wipe-target USN deletes in last 60 min'
 }
 
-Write-Section 'EVENT LOG CLEARS'
+Write-Section 'LOG CLEARS'
 $clears = @()
 try {
     $clears += Get-WinEvent -FilterHashtable @{ LogName = 'Security'; Id = 1102 } -MaxEvents 15 -ErrorAction SilentlyContinue
@@ -364,7 +350,7 @@ if ($clears -and $clears.Count -gt 0) {
         Write-Bad ("LOG CLEAR  {0:yyyy-MM-dd HH:mm:ss}  {1} ID={2}  {3}" -f $e.TimeCreated, $e.LogName, $e.Id, (Format-Clip $e.Message 100))
     }
 } else {
-    Write-Ok 'No Security 1102 / System 104 log-clear events in slice'
+    Write-Ok 'No log-clear events (1102/104)'
 }
 
 # ----- Live processes -----
@@ -380,7 +366,7 @@ try {
         foreach ($p in $procs) {
             $cmd = [string]$p.CommandLine
             if (Test-IsNoise $cmd) {
-                Write-Ok ("PID={0} {1} :: SS/launcher — ignored" -f $p.ProcessId, $p.Name)
+                Write-Ok ("PID={0} {1} :: launcher ignored" -f $p.ProcessId, $p.Name)
                 continue
             }
             $matched = Test-SuspiciousText $cmd
@@ -392,51 +378,52 @@ try {
                 Write-Ok $line
             }
         }
-        if ($liveHits -eq 0) { Write-Ok 'Live LOLBins: no suspicious cmdlines' }
+        if ($liveHits -eq 0) { Write-Ok 'No suspicious live cmdlines' }
     }
 } catch {
     Write-Warn ("Process scan failed: {0}" -f $_.Exception.Message)
 }
 
-# ----- Event logs -----
-Write-Section 'EVENT LOGS (PowerShell needles)'
-Write-Ok 'Scanning 400/403/600/800 + 4103/4104 — only RED lines are hits'
+# ----- Event logs (skip 400/403/600 — engine lifecycle spam) -----
+Write-Section 'EVENT LOGS'
 $events = @()
 try {
-    $events += Get-WinEvent -FilterHashtable @{ LogName = 'Windows PowerShell'; Id = 400, 403, 600, 800 } -MaxEvents 120 -ErrorAction SilentlyContinue
+    $events += Get-WinEvent -FilterHashtable @{ LogName = 'Windows PowerShell'; Id = 800 } -MaxEvents 80 -ErrorAction SilentlyContinue
 } catch {}
 try {
-    $events += Get-WinEvent -FilterHashtable @{ LogName = 'Microsoft-Windows-PowerShell/Operational'; Id = 4103, 4104, 4105, 4106 } -MaxEvents 150 -ErrorAction SilentlyContinue
+    $events += Get-WinEvent -FilterHashtable @{ LogName = 'Microsoft-Windows-PowerShell/Operational'; Id = 4103, 4104 } -MaxEvents 120 -ErrorAction SilentlyContinue
 } catch {}
 
 if (-not $events -or $events.Count -eq 0) {
-    Write-Warn 'No PowerShell events — logging disabled, cleared, or no activity'
+    Write-Warn 'No PowerShell events (logging off / cleared / empty)'
 } else {
-    Write-Ok ("Pulled {0} events (recent slice)" -f $events.Count)
+    Write-Ok ("Events pulled: {0}" -f $events.Count)
     $shown = 0
     foreach ($e in ($events | Sort-Object TimeCreated -Descending)) {
         $msg = $e.Message
+        if (Test-IsNoise $msg) { continue }
         $matched = @(Test-SuspiciousText $msg)
-        if ($msg -match '(?i)Remove-Item.+(ConsoleHost_history|PSReadLine)') {
+        # Tight wipe cmd only (no greedy .+ across whole scriptblock)
+        if ($msg -match '(?i)Remove-Item\s+[^\r\n]{0,120}ConsoleHost_history') {
             $matched = @($matched + 'history-remove')
         }
         if ($matched.Count -eq 0) { continue }
         $shown++
-        if ($shown -gt 25) { break }
-        Write-Bad ("{0:yyyy-MM-dd HH:mm:ss}  {1} ID={2}  [{3}]  {4}" -f `
-            $e.TimeCreated, $e.LogName, $e.Id, ($matched -join ','), (Format-Clip $msg 110))
+        if ($shown -gt 20) { break }
+        Write-Bad ("{0:yyyy-MM-dd HH:mm:ss}  ID={1}  [{2}]  {3}" -f `
+            $e.TimeCreated, $e.Id, ($matched -join ','), (Format-Clip $msg 110))
     }
     if ($shown -eq 0) {
-        Write-Ok 'CLEAN — no needle matches in this event slice'
+        Write-Ok 'No hits in event slice'
     }
 }
 
 # Security 4688
-Write-Section 'SECURITY 4688 (process create)'
+Write-Section 'SECURITY 4688'
 try {
     $sec = Get-WinEvent -FilterHashtable @{ LogName = 'Security'; Id = 4688 } -MaxEvents 80 -ErrorAction SilentlyContinue
     if (-not $sec) {
-        Write-Ok 'No 4688 (audit process creation off / no access) — OK'
+        Write-Ok 'No 4688 (audit off / no access)'
     } else {
         $n = 0
         foreach ($e in $sec) {
@@ -449,12 +436,12 @@ try {
             if ($n -gt 20) { break }
             Write-Bad ("{0:yyyy-MM-dd HH:mm:ss}  4688  [{1}]  {2}" -f $e.TimeCreated, ($matched -join ','), (Format-Clip $msg 110))
         }
-        if ($n -eq 0) { Write-Ok '4688 present — no hot powershell/LOLBin/wevtutil cmdlines' }
+        if ($n -eq 0) { Write-Ok '4688 OK — no hot cmdlines' }
     }
-} catch { Write-Ok 'Security log unread (need audit policy) — OK' }
+} catch { Write-Ok 'Security log unread' }
 
 # ----- Console history -----
-Write-Section 'POWERSHELL CONSOLE HISTORY'
+Write-Section 'CONSOLE HISTORY'
 $histPaths = @(
     (Join-Path $env:APPDATA 'Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt'),
     (Join-Path $env:USERPROFILE 'AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt')
@@ -486,7 +473,7 @@ foreach ($hp in $histPaths) {
             }
             if ($ln -match '(?i)#\s*password') {
                 $histNeedle++
-                Write-Bad 'HIST: "# password" pattern — may suppress console/event logging'
+                Write-Bad 'HIST: # password'
             }
             if ($ln -match '(?i)(Remove-Item|del |erase |rm ).*ConsoleHost_history|Clear-History|wevtutil\s+cl') {
                 $histNeedle++
@@ -500,16 +487,16 @@ foreach ($hp in $histPaths) {
 if (-not $anyHist) {
     $usnHist = @($usn.Hits | Where-Object { $_.File -match '(?i)ConsoleHost_history' })
     if ($usnHist.Count -gt 0) {
-        Write-Bad 'No ConsoleHost_history.txt + USN delete of history = WIPED'
+        Write-Bad 'History missing + USN delete = wiped'
     } else {
-        Write-Ok 'No ConsoleHost_history.txt (never used OR wiped before USN window) — not auto-guilty'
+        Write-Ok 'No ConsoleHost_history.txt'
     }
 } elseif ($histNeedle -eq 0) {
-    Write-Ok 'History clean — no needle / wipe commands'
+    Write-Ok 'History clean'
 }
 
 # ----- Prefetch -----
-Write-Section 'PREFETCH LOLBIN TRACE'
+Write-Section 'PREFETCH'
 $pfDir = 'C:\Windows\Prefetch'
 if (Test-Path $pfDir) {
     $names = @('POWERSHELL*.pf','PWSH*.pf','MSHTA*.pf','WSCRIPT*.pf','CSCRIPT*.pf','RUNDLL32*.pf','REGSVR32*.pf','WMIC*.pf')
@@ -520,26 +507,23 @@ if (Test-Path $pfDir) {
             Write-Ok ("{0:yyyy-MM-dd HH:mm:ss}  {1}" -f $_.LastWriteTime, $_.Name)
         }
     }
-    if ($found -eq 0) { Write-Ok 'No LOLBin Prefetch in top hits (or Prefetch off) — OK' }
+    if ($found -eq 0) { Write-Ok 'No LOLBin Prefetch hits' }
 } else {
     Write-Bad 'Prefetch folder missing / disabled'
 }
 
 Write-Section 'VERDICT'
-Write-KV 'Suspicious hits (RED)' "$script:SusHits" $(if ($script:SusHits -gt 0){'Red'}else{'Green'})
-Write-KV 'Warnings (YELLOW)' "$script:WarnHits" $(if ($script:WarnHits -gt 0){'Yellow'}else{'Green'})
+Write-KV 'Hits' "$script:SusHits" $(if ($script:SusHits -gt 0){'Red'}else{'Green'})
+Write-KV 'Warns' "$script:WarnHits" $(if ($script:WarnHits -gt 0){'Yellow'}else{'Green'})
 
-if ($script:SusHits -ge 5) {
-    Write-Bad 'Strong fileless / wipe signals — correlate with freeze window'
-} elseif ($script:SusHits -ge 1) {
-    Write-Bad 'Hits present — review RED lines above (USN wipe / needles / clears)'
+if ($script:SusHits -ge 1) {
+    Write-Bad ('Hits: {0} — смотри красные строки' -f $script:SusHits)
 } else {
-    Write-Ok 'CLEAN automated pass — RED count = 0'
-    Write-Ok 'Still not a RAM-only loader clear; dump if SS suspicion stays high'
+    Write-Ok 'Hits: 0'
 }
 
 if ($script:Hits.Count -gt 0) {
-    Write-Section 'HIT SUMMARY (RED only)'
+    Write-Section 'HITS'
     $script:Hits | Select-Object -First 20 | ForEach-Object { Write-Host ("  · {0}" -f $_) -ForegroundColor Red }
 }
 

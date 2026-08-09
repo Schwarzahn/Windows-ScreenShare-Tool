@@ -55,7 +55,7 @@ function Get-BloodPalette {
 
 function Write-BloodBanner {
     param(
-        [string]$Subtitle = 'ScreenShare Tool / Doomsday'
+        [string]$Subtitle = 'Doomsday'
     )
 
     Enable-AnsiConsole
@@ -98,7 +98,7 @@ function Write-BloodBanner {
 }
 
 function Write-BloodFoot {
-    param([string]$Subtitle = 'ScreenShare Tool / Doomsday')
+    param([string]$Subtitle = 'Doomsday')
     Enable-AnsiConsole
     $c = Get-BloodPalette
     $tag = "by $script:BrandName"
@@ -794,7 +794,7 @@ function Start-DoomsdayScan {
     
     $script:DebugMode = $Debug
     
-    Write-BloodBanner -Subtitle "$script:ToolName / Doomsday"
+    Write-BloodBanner -Subtitle 'Doomsday'
     
     if (-not (Test-Administrator)) {
         Write-Section 'ERROR'

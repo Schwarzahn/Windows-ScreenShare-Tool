@@ -63,7 +63,7 @@ function Test-IsAdmin {
 
 function Write-BloodBanner {
     param(
-        [string]$Subtitle = 'screenshare toolkit'
+        [string]$Subtitle = 'Service Enabler'
     )
 
     Enable-AnsiConsole
@@ -175,12 +175,12 @@ $CriticalServices = [ordered]@{
     'Power'      = @{ Startup = 'Automatic'; Start = $true;  Note = 'Питание' }
 }
 
-Write-BloodBanner -Subtitle 'ScreenShare Tool / enabler'
+Write-BloodBanner -Subtitle 'Service Enabler'
 
 if (-not (Test-IsAdmin)) {
     Write-Section 'ERROR'
     Write-Fail 'Нужны права администратора.'
-    Write-BloodFoot -Subtitle 'ScreenShare Tool'
+    Write-BloodFoot -Subtitle 'Service Enabler'
     return
 }
 
@@ -361,6 +361,6 @@ if ($failed.Count -gt 0) {
     Write-Warn ("Ошибки: {0}" -f $failed.Count)
 }
 
-Write-BloodFoot -Subtitle 'ScreenShare Tool'
+Write-BloodFoot -Subtitle 'Service Enabler'
 Write-Info 'Готово. Проверь через Services.ps1'
 Write-Host ''

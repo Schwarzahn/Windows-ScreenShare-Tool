@@ -103,7 +103,7 @@ function Write-Section([string]$Text) {
 }
 
 Clear-Host
-Write-BloodBanner -Subtitle 'Streams / ADS'
+Write-BloodBanner -Subtitle 'Streams'
 Write-Section 'SCAN'
 
 $response = Read-Host "Do you want to search recursively in subdirectories? (y/n)"
