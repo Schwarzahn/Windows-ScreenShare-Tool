@@ -2,7 +2,7 @@
 <#
 .SYNOPSIS
   Windows ScreenShare Tool — Advanced artifacts quick check
-  RecentFileCache.bcf / SRUM / AppCompatCache / PowerShell fileless hints
+  RecentFileCache · SRUM · Shimcache · ArcHistory · VM · PowerShell fileless hints
   by Schwarzahn
 
   Does NOT auto-dump RAM/Kernel (heavy, BSOD risk). Prints ready commands.
@@ -301,6 +301,63 @@ if ($accParser) {
     Write-Warn 'AppCompatCacheParser.exe not found'
     Write-Host '  AppCompatCacheParser.exe --csv .' -ForegroundColor DarkGray
 }
+
+# ----- WinRAR ArcHistory (stego) -----
+Write-Section 'WINRAR ARCHISTORY (stego)'
+$arcKey = 'HKCU:\Software\WinRAR\ArcHistory'
+if (-not (Test-Path $arcKey)) {
+    Write-Info 'No WinRAR ArcHistory key (WinRAR unused or cleaned)'
+} else {
+    try {
+        $props = Get-ItemProperty $arcKey -ErrorAction Stop
+        $entries = $props.PSObject.Properties |
+            Where-Object { $_.Name -notmatch '^PS' -and $_.Value } |
+            ForEach-Object { [string]$_.Value }
+        if (-not $entries -or $entries.Count -eq 0) {
+            Write-Info 'ArcHistory empty'
+        } else {
+            Write-Ok ("{0} ArcHistory entries" -f $entries.Count)
+            $archiveExt = @('.zip','.rar','.7z','.tar','.gz','.bz2','.xz','.cab','.iso','.wim','.lzh','.arj')
+            foreach ($e in ($entries | Select-Object -First 40)) {
+                $ext = [IO.Path]::GetExtension($e).ToLowerInvariant()
+                if ($ext -and ($archiveExt -notcontains $ext)) {
+                    Write-Bad ("STEGO SMELL: {0}" -f $e)
+                    $script:SusHits++
+                } else {
+                    Write-Info $e
+                }
+            }
+        }
+    } catch {
+        Write-Warn ("ArcHistory read failed: {0}" -f $_.Exception.Message)
+    }
+}
+$rarTemp = Get-ChildItem -Path $env:TEMP -Filter 'Rar$*' -ErrorAction SilentlyContinue | Select-Object -First 15
+if ($rarTemp) {
+    Write-Warn 'Rar$* folders/files in TEMP — check for leftover extracted exe'
+    foreach ($r in $rarTemp) { Write-Info $r.FullName }
+}
+
+# ----- VM -----
+Write-Section 'VIRTUAL MACHINE'
+try {
+    $cs = Get-CimInstance Win32_ComputerSystem -ErrorAction Stop
+    Write-KV 'Manufacturer' $cs.Manufacturer
+    Write-KV 'Model' $cs.Model
+    $blob = ("{0} {1}" -f $cs.Manufacturer, $cs.Model).ToLowerInvariant()
+    $vmNeedles = @('virtualbox','oracle','vmware','qemu','kvm','xen','hyper-v','virtual machine','parallels','bochs','innotek')
+    $vmHit = $false
+    foreach ($n in $vmNeedles) { if ($blob -like "*$n*") { $vmHit = $true; break } }
+    if ($vmHit) {
+        Write-Bad 'VM indicators in Manufacturer/Model — treat per SS rules'
+        $script:SusHits++
+    } else {
+        Write-Ok 'No obvious VM strings in CIM ComputerSystem'
+    }
+} catch {
+    Write-Warn 'CIM ComputerSystem unavailable — use msinfo32 manually'
+}
+Write-Info 'Optional: VMAware v2.6.0  https://github.com/kernelwernel/VMAware/releases/tag/v2.6.0'
 
 # ----- PowerShell fileless hints -----
 Write-Section 'FILELESS HINTS (Event Viewer / PowerShell)'
