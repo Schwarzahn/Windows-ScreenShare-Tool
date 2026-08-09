@@ -103,50 +103,62 @@ function Test-IsAdmin {
     return $p.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
 
-# Tight needles — avoid short junk like bare "etw" / "bypass" / "Patch" (huge FPs in Defender logs)
+# Detector build — bump so you can see cache bust worked
+$script:DetectorBuild = 'v3-2026-08-09'
+
+# REAL fileless / injector signals (short junk like "etw"/"bypass" intentionally absent)
 $script:NeedleStrong = @(
-    'FromBase64String','IEX(','IEX ','Invoke-Expression',
-    'DownloadString','DownloadFile','DownloadData','Net.WebClient',
-    'Start-BitsTransfer','bitsadmin',
-    '-EncodedCommand',' -enc ',' -e  ',' -ec ',
-    'Reflection.Assembly','Assembly.Load','Load([byte','VirtualAlloc','WriteProcessMemory',
-    'CreateRemoteThread','Marshal::Copy',
+    'FromBase64String','DownloadString','DownloadFile','DownloadData',
+    'Net.WebClient','Start-BitsTransfer','bitsadmin ',
+    '-EncodedCommand',' -enc ','Assembly.Load','Load([byte',
+    'VirtualAlloc','WriteProcessMemory','CreateRemoteThread','Marshal::Copy',
     'AmsiUtils','amsiInitFailed','amsiContext','AmsiScanBuffer',
     'System.Management.Automation.AmsiUtils','EtwEventWrite',
-    'DisableRealtimeMonitoring','DisableIOAVProtection','ExclusionPath','ExclusionProcess',
-    'mshta http','mshta https','hta:application','javascript:','vbscript:',
+    'Set-MpPreference -DisableRealtimeMonitoring','DisableRealtimeMonitoring $true',
+    'Add-MpPreference -ExclusionPath','Add-MpPreference -ExclusionProcess',
+    'mshta http','mshta https','hta:application',
     'regsvr32 /s /n /u /i:','scrobj.dll',
-    'wmic process call create','Invoke-WmiMethod',
+    'wmic process call create',
     'powershell -w hidden','-WindowStyle Hidden',
     '# password','#password',
-    'reflective dll','ReflectiveLoader'
+    'ReflectiveLoader','reflective dll'
 )
 
-# Weaker — only count if paired with strong signal already (never alone)
-# NOTE: irm / Invoke-RestMethod / iwr / Invoke-WebRequest are NOT indicators
-# (every SS one-liner uses them — pure noise)
-$script:NeedleWeak = @(
-    'Set-MpPreference'
-)
-
-# Ignore our own SS tooling / this detector (otherwise every irm|iex self-flags)
+# Self / SS / this script's 4104 dump (needle arrays live in the script text)
 $script:IgnoreSubstrings = @(
     'Windows-ScreenShare-Tool','FilelessDetector','DoomsDayDetector','AdvancedArtifacts',
-    'Service-Enabler','Schwarzahn/Windows','ScreenShare-Tool-by-Schwarzahn',
-    'raw.githubusercontent.com/Schwarzahn'
+    'Service-Enabler','Schwarzahn','ScreenShare-Tool-by-Schwarzahn',
+    'raw.githubusercontent.com/Schwarzahn',
+    'Fileless / Bypass Detector','Fileless + AMSI',
+    'NeedleStrong','NeedleWeak','IgnoreSubstrings','DetectorBuild'
 )
 
-function Test-IsSelfNoise([string]$Text) {
-    if ([string]::IsNullOrWhiteSpace($Text)) { return $false }
+function Test-IsNoise([string]$Text) {
+    if ([string]::IsNullOrWhiteSpace($Text)) { return $true }
+    # Defender Get/Set-Mp* proxy definitions flood 4104 with ExclusionPath etc. — not real calls
+    if ($Text.IndexOf('__cmdletization', [StringComparison]::OrdinalIgnoreCase) -ge 0) { return $true }
+    if ($Text.IndexOf('Microsoft.PowerShell.Cmdletization', [StringComparison]::OrdinalIgnoreCase) -ge 0) { return $true }
     foreach ($x in $script:IgnoreSubstrings) {
         if ($Text.IndexOf($x, [StringComparison]::OrdinalIgnoreCase) -ge 0) { return $true }
+    }
+    # SS one-liner: Bypass + IEX + IWR/IRM
+    $isLauncher =
+        ($Text.IndexOf('ExecutionPolicy', [StringComparison]::OrdinalIgnoreCase) -ge 0) -and
+        ($Text.IndexOf('Invoke-Expression', [StringComparison]::OrdinalIgnoreCase) -ge 0) -and
+        (
+            ($Text.IndexOf('Invoke-RestMethod', [StringComparison]::OrdinalIgnoreCase) -ge 0) -or
+            ($Text.IndexOf('Invoke-WebRequest', [StringComparison]::OrdinalIgnoreCase) -ge 0)
+        )
+    if ($isLauncher) { return $true }
+    if ($Text -match '(?i)Invoke-Expression\s*\(\s*Invoke-RestMethod' -and
+        $Text -notmatch '(?i)FromBase64String|DownloadString|AmsiUtils|VirtualAlloc|WriteProcessMemory') {
+        return $true
     }
     return $false
 }
 
 function Test-SuspiciousText([string]$Text) {
-    if ([string]::IsNullOrWhiteSpace($Text)) { return @() }
-    if (Test-IsSelfNoise $Text) { return @() }
+    if (Test-IsNoise $Text) { return @() }
 
     $hits = New-Object System.Collections.Generic.List[string]
     foreach ($n in $script:NeedleStrong) {
@@ -154,19 +166,6 @@ function Test-SuspiciousText([string]$Text) {
             [void]$hits.Add($n.Trim())
         }
     }
-    $weakHits = @()
-    foreach ($n in $script:NeedleWeak) {
-        if ($Text.IndexOf($n, [StringComparison]::OrdinalIgnoreCase) -ge 0) {
-            $weakHits += $n.Trim()
-        }
-    }
-    # Weak alone is noise (Defender logs / SS irm). Keep only if strong already hit OR 2+ weak.
-    if ($hits.Count -gt 0) {
-        foreach ($w in $weakHits) { [void]$hits.Add($w) }
-    } elseif ($weakHits.Count -ge 2) {
-        foreach ($w in $weakHits) { [void]$hits.Add($w) }
-    }
-
     return @($hits | Select-Object -Unique)
 }
 
@@ -191,8 +190,10 @@ Write-Section 'SYSTEM'
 Write-KV 'PC' $env:COMPUTERNAME
 Write-KV 'User' $env:USERNAME
 Write-KV 'Now' (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
+Write-KV 'Build' $script:DetectorBuild 'Cyan'
 Write-Info 'Fileless = mostly RAM. Disk logs help; wiped logs → RAM dump.'
-Write-Info 'Self irm|iex of Schwarzahn tools is ignored (not a hit).'
+Write-Info 'Ignores: SS irm|iex launcher, own 4104 dump, Defender __cmdletization noise.'
+Write-Info 'If Build missing/old → GitHub CDN cache; re-run with ?cb=rand on the URL.'
 
 # ----- Logging posture -----
 Write-Section 'POWERSHELL LOGGING STATE'
@@ -264,8 +265,8 @@ try {
     } else {
         foreach ($p in $procs) {
             $cmd = [string]$p.CommandLine
-            if (Test-IsSelfNoise $cmd) {
-                Write-Info ("PID={0} {1} :: (SS tool — ignored)" -f $p.ProcessId, $p.Name)
+            if (Test-IsNoise $cmd) {
+                Write-Info ("PID={0} {1} :: (SS/launcher — ignored)" -f $p.ProcessId, $p.Name)
                 continue
             }
             $matched = Test-SuspiciousText $cmd

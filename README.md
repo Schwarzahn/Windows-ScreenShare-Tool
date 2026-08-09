@@ -39,7 +39,7 @@ powershell -ExecutionPolicy Bypass -Command "Invoke-Expression (Invoke-RestMetho
 Fileless / AMSI-bypass detector:
 
 ```bat
-powershell -ExecutionPolicy Bypass -Command "Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/FilelessDetector.ps1')"
+powershell -ExecutionPolicy Bypass -Command "Invoke-Expression (Invoke-RestMethod ('https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/FilelessDetector.ps1?cb=' + [guid]::NewGuid()))"
 ```
 
 Шаблон для любого скрипта из репо:
