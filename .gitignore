@@ -1,0 +1,12 @@
+# local secrets
+**/.discord.token
+.secrets/
+discord-export/
+ss-export/
+
+# hub build
+hub/**/bin/
+hub/**/obj/
+hub-build/
+*.user
+.vs/

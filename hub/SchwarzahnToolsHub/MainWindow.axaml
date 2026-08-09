@@ -1,0 +1,56 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="SchwarzahnToolsHub.MainWindow"
+        Title="Schwarzahn Tools"
+        Width="1000" Height="660"
+        MinWidth="800" MinHeight="500"
+        Background="#140000"
+        WindowStartupLocation="CenterScreen">
+  <Grid Margin="14" RowDefinitions="Auto,*,Auto" ColumnDefinitions="210,*">
+
+    <DockPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,12">
+      <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" Spacing="10">
+        <TextBlock Text="SCHWARZAHN" FontSize="24" FontWeight="Bold" Foreground="#FF2B2B" VerticalAlignment="Center"/>
+        <TextBlock Text="TOOLS" FontSize="24" FontWeight="SemiBold" Foreground="#CC8888" VerticalAlignment="Center"/>
+        <TextBlock Text="v1.0" FontSize="12" Foreground="#666" VerticalAlignment="Center" Margin="8,4,0,0"/>
+      </StackPanel>
+      <TextBox x:Name="SearchBox" Watermark="Search BAM, Prefetch, Fileless, USB…"
+               Height="34" MinWidth="280" Margin="20,0,0,0"
+               Background="#1E0000" Foreground="#EEE" BorderBrush="#5A1010"
+               CaretBrush="#FF5555"/>
+    </DockPanel>
+
+    <Border Grid.Row="1" Grid.Column="0" Background="#1A0000" BorderBrush="#3A0A0A" BorderThickness="1"
+            CornerRadius="6" Margin="0,0,12,0" Padding="4">
+      <ListBox x:Name="CatList" Background="Transparent" BorderThickness="0"
+               Foreground="#DDD" SelectionChanged="OnCatChanged"/>
+    </Border>
+
+    <DockPanel Grid.Row="1" Grid.Column="1">
+      <TextBlock x:Name="CatDesc" DockPanel.Dock="Top" Foreground="#888" Margin="0,0,0,8" TextWrapping="Wrap"/>
+      <DataGrid x:Name="ToolGrid" AutoGenerateColumns="False" IsReadOnly="True"
+                Background="#120000" Foreground="#EEE" GridLinesVisibility="Horizontal"
+                BorderBrush="#3A0A0A" HeadersVisibility="Column"
+                SelectionMode="Single" CanUserResizeColumns="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Tool" Binding="{Binding Name}" Width="220"/>
+          <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*"/>
+          <DataGridTextColumn Header="Kind" Binding="{Binding Kind}" Width="90"/>
+        </DataGrid.Columns>
+      </DataGrid>
+    </DockPanel>
+
+    <DockPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,12,0,0">
+      <StackPanel Orientation="Horizontal" Spacing="8" DockPanel.Dock="Left">
+        <Button x:Name="BtnRun" Content="Download / Run" Width="140" Height="34" Click="OnRun"
+                Background="#5A0000" Foreground="White" BorderBrush="#AA2222"/>
+        <Button Content="Open folder" Width="110" Height="34" Click="OnFolder"
+                Background="#2A1010" Foreground="#EEE" BorderBrush="#552222"/>
+        <Button Content="Clear tools" Width="110" Height="34" Click="OnClear"
+                Background="#2A1010" Foreground="#F88" BorderBrush="#552222"/>
+      </StackPanel>
+      <TextBlock x:Name="StatusText" Text="Ready" Foreground="#7CBA8A" VerticalAlignment="Center"
+                 HorizontalAlignment="Right"/>
+    </DockPanel>
+  </Grid>
+</Window>

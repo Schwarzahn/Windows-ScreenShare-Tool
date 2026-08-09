@@ -42,7 +42,12 @@ Fileless:
 powershell -ExecutionPolicy Bypass -Command "Invoke-Expression (Invoke-RestMethod ('https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/FilelessDetector.ps1?cb=' + [guid]::NewGuid()))"
 ```
 
-**Tools hub** (GUI — OrbDiff / Spokwn / Zimmerman / NirSoft + наши скрипты):
+**Tools hub** — лучше `.exe` (GUI):
+
+1. Скачай [SchwarzahnTools.exe](https://github.com/Schwarzahn/Windows-ScreenShare-Tool/releases/latest/download/SchwarzahnTools.exe)
+2. Запусти **от Администратора**
+
+Или PowerShell-версия:
 
 ```bat
 powershell -NoProfile -STA -ExecutionPolicy Bypass -Command "Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/SchwarzahnTools.ps1')"
