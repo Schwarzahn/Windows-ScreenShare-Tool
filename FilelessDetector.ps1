@@ -12,7 +12,7 @@ $script:ToolName = 'Fileless'
 $script:SusHits = 0
 $script:WarnHits = 0
 $script:Hits = New-Object System.Collections.Generic.List[string]
-$script:DetectorBuild = 'v6-2026-08-09'
+$script:DetectorBuild = 'v7-2026-08-09'
 
 function Enable-AnsiConsole {
     if ($script:AnsiReady) { return }
@@ -134,20 +134,51 @@ function Write-Info([string]$t) {
 function Write-LoadBar {
     param(
         [string]$Label,
-        [double]$Percent,
-        [string]$Detail = ''
+        [double]$Percent = -1,
+        [string]$Detail = '',
+        [switch]$Done
     )
     Enable-AnsiConsole; $c = Get-BloodPalette
-    if ($Percent -lt 0) { $Percent = 0 }
-    if ($Percent -gt 100) { $Percent = 100 }
-    $w = 28
-    $fill = [int][Math]::Round($w * ($Percent / 100.0))
-    $bar = ('█' * $fill) + ('░' * ($w - $fill))
-    $pct = '{0,3:N0}%' -f $Percent
-    $line = "$($c.Ash)$("{0,-14}" -f $Label)$($c.Reset) $($c.Blood)$bar$($c.Reset) $($c.Ember)$pct$($c.Reset)"
-    if ($Detail) { $line += "  $($c.Ice)$Detail$($c.Reset)" }
-    Write-Ansi ("`r$line   ")
-    if ($Percent -ge 100) { Write-Ansi ("`n") }
+    $w = 24
+    if ($Percent -lt 0) {
+        $tick = [Math]::Abs([int]([Diagnostics.Stopwatch]::GetTimestamp() / 150000)) % $w
+        $bar = (('░' * $tick) + '▓' + ('░' * ($w - $tick - 1)))
+        if ($bar.Length -gt $w) { $bar = $bar.Substring(0, $w) }
+        $pctTxt = '···'
+    } else {
+        if ($Percent -gt 100) { $Percent = 100 }
+        if ($Percent -lt 0) { $Percent = 0 }
+        $fill = [int][Math]::Floor($w * ($Percent / 100.0))
+        if ($fill -gt $w) { $fill = $w }
+        $bar = ('█' * $fill) + ('░' * ($w - $fill))
+        $pctTxt = '{0,3:N0}%' -f $Percent
+    }
+    $plain = ("{0,-10} {1} {2}  {3}" -f $Label, $bar, $pctTxt, $Detail)
+    if ($plain.Length -lt 100) { $plain = $plain + (' ' * (100 - $plain.Length)) }
+    else { $plain = $plain.Substring(0, 100) }
+    Write-Ansi ("$esc[2K`r$($c.Ash)$("{0,-10}" -f $Label)$($c.Reset) $($c.Blood)$bar$($c.Reset) $($c.Ember)$pctTxt$($c.Reset)  $($c.Ice)$Detail$($c.Reset)")
+    # wipe rest of line
+    Write-Ansi ("$esc[K")
+    if ($Done -or ($Percent -ge 100 -and $Percent -ge 0)) {
+        Write-Host ''
+    }
+}
+
+function Write-UsnProgress {
+    param(
+        [long]$Lines,
+        [double]$Sec,
+        [int]$WipeHits,
+        [switch]$Done
+    )
+    $rate = 0
+    if ($Sec -gt 0.15) { $rate = [int]($Lines / $Sec) }
+    $linesTxt = if ($Lines -ge 1000000) { '{0:N2}M' -f ($Lines / 1000000.0) }
+        elseif ($Lines -ge 1000) { '{0:N0}k' -f ($Lines / 1000.0) }
+        else { "$Lines" }
+    $pct = if ($Done) { 100 } else { [Math]::Min(99, [int](($Lines / 60000) % 100)) }
+    $detail = ("{0} ln  {1}/s  hit={2}  {3:N0}s" -f $linesTxt, $rate, $WipeHits, $Sec)
+    Write-LoadBar -Label 'USN' -Percent $pct -Detail $detail -Done:$Done
 }
 
 function Test-IsAdmin {
@@ -199,7 +230,7 @@ $script:IgnoreSubstrings = @(
     'Windows-ScreenShare-Tool', 'FilelessDetector', 'DoomsDayDetector', 'AdvancedArtifacts',
     'Service-Enabler', 'Schwarzahn', 'ScreenShare-Tool-by-Schwarzahn',
     'raw.githubusercontent.com/Schwarzahn',
-    'Write-BloodBanner', 'Write-Bad', 'Write-Ok', 'Write-Warn', 'Write-Section', 'Write-LoadBar',
+    'Write-BloodBanner', 'Write-Bad', 'Write-Ok', 'Write-Warn', 'Write-Section', 'Write-LoadBar', 'Write-UsnProgress',
     'NeedleHard', 'NeedleSoft', 'IgnoreSubstrings', 'DetectorBuild', 'WipeFileNames', 'Get-UsnWipeHits'
 )
 
@@ -263,7 +294,14 @@ function Format-Clip([string]$s, [int]$Max = 140) {
 
 function Test-IsWipeReason([string]$Reason) {
     if ([string]::IsNullOrWhiteSpace($Reason)) { return $false }
-    return ($Reason -match '(?i)File delete|CLOSE\+DELETE|Close \+ File delete|FILE_DELETE|DATA_OVERWRITE|Security change|Rename')
+    # IndexOf faster than regex on millions of USN reasons
+    if ($Reason.IndexOf('File delete', [StringComparison]::OrdinalIgnoreCase) -ge 0) { return $true }
+    if ($Reason.IndexOf('CLOSE+DELETE', [StringComparison]::OrdinalIgnoreCase) -ge 0) { return $true }
+    if ($Reason.IndexOf('FILE_DELETE', [StringComparison]::OrdinalIgnoreCase) -ge 0) { return $true }
+    if ($Reason.IndexOf('DATA_OVERWRITE', [StringComparison]::OrdinalIgnoreCase) -ge 0) { return $true }
+    if ($Reason.IndexOf('Rename', [StringComparison]::OrdinalIgnoreCase) -ge 0) { return $true }
+    if ($Reason.IndexOf('Security change', [StringComparison]::OrdinalIgnoreCase) -ge 0) { return $true }
+    return $false
 }
 
 function Test-IsWipeFileName([string]$Name) {
@@ -272,8 +310,8 @@ function Test-IsWipeFileName([string]$Name) {
     foreach ($w in $script:WipeFileNames) {
         if ($n.IndexOf($w, [StringComparison]::OrdinalIgnoreCase) -ge 0) { return $true }
     }
-    if ($n -match '(?i)\.pf$' -and $n -match '(?i)POWERSHELL|PWSH|MSHTA|RUNDLL32|REGSVR32|WSCRIPT|CSCRIPT|WMIC|CMD\.EXE') {
-        return $true
+    if ($n.EndsWith('.pf', [StringComparison]::OrdinalIgnoreCase)) {
+        if ($n -match '(?i)POWERSHELL|PWSH|MSHTA|RUNDLL32|REGSVR32|WSCRIPT|CSCRIPT|WMIC|CMD\.EXE') { return $true }
     }
     return $false
 }
@@ -285,60 +323,60 @@ function Get-UsnWipeHits {
     )
     $hits = New-Object System.Collections.Generic.List[object]
     $pfDeletes = 0
-    $sw = [Diagnostics.Stopwatch]::StartNew()
 
     foreach ($driveLetter in $DriveLetters) {
+        $sw = [Diagnostics.Stopwatch]::StartNew()
+        $lines = [long]0
+        $currentFile = ''
+        $currentTime = $null
+        $proc = $null
         try {
-            Write-Info ("USN read {0}: (journal dump)..." -f $driveLetter)
-            Write-LoadBar -Label "USN dump" -Percent 0 -Detail 'fsutil...'
-            $usnOutput = & fsutil usn readjournal "$driveLetter`:" 2>$null
-            if ($LASTEXITCODE -ne 0 -or -not $usnOutput) {
-                Write-Ansi ("`n")
-                Write-Warn ("USN unread on {0}: (off / not NTFS / locked)" -f $driveLetter)
-                continue
-            }
+            Write-Info ("USN stream {0}: (live parse, no full dump into RAM)" -f $driveLetter)
+            Write-UsnProgress -Lines 0 -Sec 0 -WipeHits 0
 
-            $total = @($usnOutput).Count
-            if ($total -le 0) {
-                Write-Ansi ("`n")
-                Write-Warn ("USN empty on {0}:" -f $driveLetter)
-                continue
-            }
+            $psi = New-Object System.Diagnostics.ProcessStartInfo
+            $psi.FileName = 'fsutil.exe'
+            $psi.Arguments = "usn readjournal ${driveLetter}:"
+            $psi.UseShellExecute = $false
+            $psi.RedirectStandardOutput = $true
+            $psi.RedirectStandardError = $true
+            $psi.CreateNoWindow = $true
+            $proc = New-Object System.Diagnostics.Process
+            $proc.StartInfo = $psi
+            [void]$proc.Start()
+            $reader = $proc.StandardOutput
+            $lastUi = [datetime]::MinValue
 
-            Write-LoadBar -Label "USN parse" -Percent 0 -Detail ("0/{0}" -f $total)
-            $currentFile = ''
-            $currentTime = $null
-            $i = 0
-            $lastPct = -1
-            foreach ($line in $usnOutput) {
-                $i++
-                $pct = [Math]::Floor(($i * 100.0) / $total)
-                if ($pct -ne $lastPct -and ($pct % 2 -eq 0 -or $pct -ge 100)) {
-                    $lastPct = $pct
-                    $eta = ''
-                    if ($pct -gt 0 -and $pct -lt 100) {
-                        $left = ($sw.Elapsed.TotalSeconds * (100.0 - $pct) / $pct)
-                        $eta = ('{0:N0}s left' -f $left)
-                    }
-                    Write-LoadBar -Label "USN parse" -Percent $pct -Detail ("{0}/{1}  {2}" -f $i, $total, $eta)
+            while ($null -ne ($line = $reader.ReadLine())) {
+                $lines++
+                # UI ~8 Hz — don't redraw every line
+                if (((Get-Date) - $lastUi).TotalMilliseconds -ge 120) {
+                    $lastUi = Get-Date
+                    Write-UsnProgress -Lines $lines -Sec $sw.Elapsed.TotalSeconds -WipeHits $hits.Count
                 }
 
                 if ([string]::IsNullOrWhiteSpace($line)) { continue }
-                if ($line -match 'File name\s+:\s*(.+)$') {
-                    $currentFile = $Matches[1].Trim()
-                } elseif ($line -match 'Time stamp\s+:\s*(.+)$') {
-                    try { $currentTime = [DateTime]::Parse($Matches[1].Trim()) } catch { $currentTime = $null }
-                } elseif ($line -match 'Reason\s+:\s*(.+)$') {
-                    $reason = $Matches[1].Trim()
-                    if ($currentFile -and $currentTime -and $currentTime -ge $Cutoff -and (Test-IsWipeReason $reason)) {
+
+                # Fast path: fsutil lines look like "File name    : xxx"
+                $colon = $line.IndexOf(':')
+                if ($colon -lt 1) { continue }
+                $key = $line.Substring(0, $colon).Trim()
+                $val = $line.Substring($colon + 1).Trim()
+
+                if ($key.Equals('File name', [StringComparison]::OrdinalIgnoreCase)) {
+                    $currentFile = $val
+                } elseif ($key.Equals('Time stamp', [StringComparison]::OrdinalIgnoreCase)) {
+                    try { $currentTime = [DateTime]::Parse($val) } catch { $currentTime = $null }
+                } elseif ($key.Equals('Reason', [StringComparison]::OrdinalIgnoreCase)) {
+                    if ($currentFile -and $currentTime -and $currentTime -ge $Cutoff -and (Test-IsWipeReason $val)) {
                         if (Test-IsWipeFileName $currentFile) {
                             [void]$hits.Add([pscustomobject]@{
                                 Drive  = $driveLetter
                                 File   = $currentFile
                                 Time   = $currentTime
-                                Reason = $reason
+                                Reason = $val
                             })
-                        } elseif ($currentFile -match '(?i)\.pf$') {
+                        } elseif ($currentFile.EndsWith('.pf', [StringComparison]::OrdinalIgnoreCase)) {
                             $pfDeletes++
                         }
                     }
@@ -346,10 +384,22 @@ function Get-UsnWipeHits {
                     $currentTime = $null
                 }
             }
-            Write-LoadBar -Label "USN parse" -Percent 100 -Detail ("{0}/{0}  {1:N1}s" -f $total, $sw.Elapsed.TotalSeconds)
+
+            $proc.WaitForExit(120000) | Out-Null
+            Write-UsnProgress -Lines $lines -Sec $sw.Elapsed.TotalSeconds -WipeHits $hits.Count -Done
+            if ($lines -eq 0) {
+                Write-Warn ("USN empty/unread on {0}:" -f $driveLetter)
+            } else {
+                Write-Ok ("USN done: {0:N0} lines in {1:N1}s" -f $lines, $sw.Elapsed.TotalSeconds)
+            }
         } catch {
-            Write-Ansi ("`n")
+            Write-Host ''
             Write-Warn ("USN error {0}: {1}" -f $driveLetter, $_.Exception.Message)
+        } finally {
+            if ($proc -and -not $proc.HasExited) {
+                try { $proc.Kill() } catch {}
+            }
+            if ($proc) { $proc.Dispose() }
         }
     }
 
@@ -377,7 +427,7 @@ Write-KV 'Now' (Get-Date -Format 'yyyy-MM-dd HH:mm:ss') 'soft'
 Write-KV 'Boot' ($boot.ToString('yyyy-MM-dd HH:mm:ss')) 'hot'
 Write-KV 'Uptime' $uptimeTxt 'ember'
 Write-KV 'Build' $script:DetectorBuild 'ok'
-Write-Info 'USN window = since boot (journal size still limits how far back)'
+Write-Info 'USN = stream since boot (bar = lines/s, not fake 1% dump wait)'
 
 Write-Section 'POWERSHELL LOGGING'
 $sbKey = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging'
@@ -466,22 +516,14 @@ try {
         Write-Ok 'No watched LOLBins'
     } else {
         $liveHits = 0
-        $pi = 0
-        $pt = @($procs).Count
         foreach ($p in $procs) {
-            $pi++
-            if ($pt -gt 4) {
-                Write-LoadBar -Label 'Live scan' -Percent (($pi * 100.0) / $pt) -Detail ("{0}/{1}" -f $pi, $pt)
-            }
             $cmd = [string]$p.CommandLine
             if (Test-IsNoise $cmd) {
-                if ($pt -gt 4 -and $pi -eq $pt) { Write-Ansi ("`n") }
                 Write-Ok ("PID={0} {1} :: launcher ignored" -f $p.ProcessId, $p.Name)
                 continue
             }
             $matched = Test-SuspiciousText $cmd
             $line = "PID=$($p.ProcessId) $($p.Name) :: $(Format-Clip $cmd 110)"
-            if ($pt -gt 4 -and $pi -eq $pt) { Write-Ansi ("`n") }
             if ($matched.Count -gt 0) {
                 $liveHits++
                 Write-Bad ("LIVE [{0}] {1}" -f ($matched -join ','), $line)
@@ -495,11 +537,11 @@ try {
 
 Write-Section 'EVENT LOGS'
 $events = @()
-Write-LoadBar -Label 'Events' -Percent 10 -Detail 'WinPS 800...'
+Write-LoadBar -Label 'Events' -Percent 15 -Detail 'WinPS 800...'
 try { $events += Get-WinEvent -FilterHashtable @{ LogName = 'Windows PowerShell'; Id = 800 } -MaxEvents 100 -ErrorAction SilentlyContinue } catch {}
-Write-LoadBar -Label 'Events' -Percent 55 -Detail 'Operational...'
+Write-LoadBar -Label 'Events' -Percent 60 -Detail 'Operational...'
 try { $events += Get-WinEvent -FilterHashtable @{ LogName = 'Microsoft-Windows-PowerShell/Operational'; Id = 4103, 4104 } -MaxEvents 150 -ErrorAction SilentlyContinue } catch {}
-Write-LoadBar -Label 'Events' -Percent 100 -Detail ("{0} pulled" -f @($events).Count)
+Write-LoadBar -Label 'Events' -Percent 100 -Detail ("{0} pulled" -f @($events).Count) -Done
 
 if (-not $events -or $events.Count -eq 0) {
     Write-Warn 'No PowerShell events'
@@ -508,10 +550,12 @@ if (-not $events -or $events.Count -eq 0) {
     $shown = 0
     $ei = 0
     $et = $events.Count
+    $lastNeedleUi = [datetime]::MinValue
     foreach ($e in ($events | Sort-Object TimeCreated -Descending)) {
         $ei++
-        if ($ei % 15 -eq 0 -or $ei -eq $et) {
-            Write-LoadBar -Label 'Needle' -Percent (($ei * 100.0) / $et) -Detail ("{0}/{1}" -f $ei, $et)
+        if ($ei -eq $et -or (($ei % 20 -eq 0) -and ((Get-Date) - $lastNeedleUi).TotalMilliseconds -ge 100)) {
+            $lastNeedleUi = Get-Date
+            Write-LoadBar -Label 'Scan' -Percent (($ei * 100.0) / $et) -Detail ("{0}/{1}" -f $ei, $et) -Done:($ei -eq $et)
         }
         $msg = $e.Message
         if (Test-IsNoise $msg) { continue }
@@ -520,6 +564,8 @@ if (-not $events -or $events.Count -eq 0) {
             $matched = @($matched + 'history-remove')
         }
         if ($matched.Count -eq 0) { continue }
+        # clear progress line before red hit so lines don't merge
+        Write-Ansi ("$esc[2K`r")
         $shown++
         if ($shown -gt 20) { break }
         Write-Bad ("{0:yyyy-MM-dd HH:mm:ss}  ID={1}  [{2}]  {3}" -f `
