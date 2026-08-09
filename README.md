@@ -74,7 +74,7 @@ powershell -ExecutionPolicy Bypass -Command "Invoke-Expression (Invoke-RestMetho
 |:--|:--|:--:|:--|
 | [`Streams.ps1`](Streams.ps1) | **ADS** / Zone.Identifier scanner | — | `…/Streams.ps1` |
 | [`AdvancedArtifacts.ps1`](AdvancedArtifacts.ps1) | RecentFileCache · SRUM · Shimcache · ArcHistory · VM | yes | `…/AdvancedArtifacts.ps1` |
-| [`FilelessDetector.ps1`](FilelessDetector.ps1) | Fileless + AMSI-bypass **detection** (PS logs, history, LOLBins, 4688) | yes | `…/FilelessDetector.ps1` |
+| [`FilelessDetector.ps1`](FilelessDetector.ps1) | Fileless / wipe **detection** (PS logs, USN history wipe, Prefetch, 1102/104, 4688). RED=hit GREEN=OK | yes | `…/FilelessDetector.ps1` |
 | [`CommonDirectories.ps1`](CommonDirectories.ps1) | Common SS directories snapshot | — | `…/CommonDirectories.ps1` |
 | [`HotspotLogs.ps1`](HotspotLogs.ps1) | Mobile Hotspot / ICS / WLAN events | yes | `…/HotspotLogs.ps1` |
 | [`ManualTasks.ps1`](ManualTasks.ps1) | Scheduled tasks for current user | — | `…/ManualTasks.ps1` |
