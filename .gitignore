@@ -1,0 +1,12 @@
+.secrets/
+**/.discord.token
+discord-export/
+ss-export/
+.cursor/
+tools/
+hub/**/bin/
+hub/**/obj/
+hub-build/
+hub/**/publish/
+*.user
+.vs/

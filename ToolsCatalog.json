@@ -1,0 +1,1207 @@
+{
+  "categories": [
+    {
+      "Key": "schwarzahn",
+      "Label": "Schwarzahn",
+      "Description": "Our kit — Services, BAM, Streams, Fileless, Doomsday, Mods…"
+    },
+    {
+      "Key": "orbdiff",
+      "Label": "OrbDiff",
+      "Description": "Prefetch, BAM, USN, Fileless, USB, strings — github.com/Orbdiff"
+    },
+    {
+      "Key": "spokwn",
+      "Label": "Spokwn",
+      "Description": "BAM, Journal, ActivitiesCache, KernelLiveDump — github.com/spokwn"
+    },
+    {
+      "Key": "ericzimmerman",
+      "Label": "Zimmerman",
+      "Description": "Amcache, Prefetch, SRUM, MFT, Registry, Timeline"
+    },
+    {
+      "Key": "nirsoft",
+      "Label": "NirSoft",
+      "Description": "USB, Prefetch, ShellBags, Event Log, Jump Lists"
+    },
+    {
+      "Key": "detectac",
+      "Label": "DetectAC",
+      "Description": "Detect.ac Free Tools ++ builds"
+    },
+    {
+      "Key": "tonynoh",
+      "Label": "Tonynoh",
+      "Description": "Meow resolver / client / doomsday utilities"
+    },
+    {
+      "Key": "redlotus",
+      "Label": "RedLotus",
+      "Description": "Mod analyzer, TaskSentinel, AltChecker"
+    },
+    {
+      "Key": "praiselily",
+      "Label": "PraiseLily",
+      "Description": "PSHunter, AltDetector"
+    },
+    {
+      "Key": "scripts",
+      "Label": "Scripts",
+      "Description": "Community one-liner PS scripts (visible console)"
+    },
+    {
+      "Key": "others",
+      "Label": "Others",
+      "Description": "System Informer, Everything, HxD, DIE, Velociraptor…"
+    },
+    {
+      "Key": "dependencies",
+      "Label": "Deps",
+      "Description": ".NET runtimes + VC++ redistributable"
+    }
+  ],
+  "tools": [
+    {
+      "Name": "Services",
+      "Description": "SERVICE STATUS + BAM/Prefetch pulse",
+      "Category": "schwarzahn",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/Services.ps1')"
+    },
+    {
+      "Name": "Service Enabler",
+      "Description": "Heal critical SS services + Prefetch",
+      "Category": "schwarzahn",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/Service-Enabler.ps1')"
+    },
+    {
+      "Name": "Bam Viewer",
+      "Description": "BAM paths / times / signatures",
+      "Category": "schwarzahn",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/BamViewer.ps1')"
+    },
+    {
+      "Name": "Streams",
+      "Description": "ADS / Zone.Identifier scanner",
+      "Category": "schwarzahn",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/Streams.ps1')"
+    },
+    {
+      "Name": "Mod Analyzer",
+      "Description": "Modrinth / Megabase / string hits",
+      "Category": "schwarzahn",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/ModAnalyzer.ps1')"
+    },
+    {
+      "Name": "DoomsDay Detector",
+      "Description": "USN + Prefetch client scanner",
+      "Category": "schwarzahn",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/DoomsDayDetector.ps1')"
+    },
+    {
+      "Name": "Fileless",
+      "Description": "PS logs + USN wipe + Defender",
+      "Category": "schwarzahn",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/FilelessDetector.ps1')"
+    },
+    {
+      "Name": "Advanced Artifacts",
+      "Description": "RFC / SRUM / Shim / ArcHistory / VM",
+      "Category": "schwarzahn",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/AdvancedArtifacts.ps1')"
+    },
+    {
+      "Name": "Common Directories",
+      "Description": "Common SS folders snapshot",
+      "Category": "schwarzahn",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/CommonDirectories.ps1')"
+    },
+    {
+      "Name": "Hotspot Logs",
+      "Description": "Mobile Hotspot / ICS / WLAN",
+      "Category": "schwarzahn",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/HotspotLogs.ps1')"
+    },
+    {
+      "Name": "Manual Tasks",
+      "Description": "Current-user scheduled tasks",
+      "Category": "schwarzahn",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/ManualTasks.ps1')"
+    },
+    {
+      "Name": "Kill Screen Processes",
+      "Description": "Capture / forbidden process kill",
+      "Category": "schwarzahn",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/KillScreenProcesses.ps1')"
+    },
+    {
+      "Name": "Signatures Parser",
+      "Description": "Signature / hash style parse",
+      "Category": "schwarzahn",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/Schwarzahn/Windows-ScreenShare-Tool/main/SignaturesParser.ps1')"
+    },
+    {
+      "Name": "Prefetch View++",
+      "Description": "Parses prefetch extracting file info",
+      "Category": "orbdiff",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/Orbdiff/PrefetchView/releases/download/v1.6.7/pv++.exe"
+      ]
+    },
+    {
+      "Name": "BAM Reveal",
+      "Description": "Parses BAM forensic artefact",
+      "Category": "orbdiff",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/Orbdiff/BAMReveal/releases/latest/download/BAMReveal.exe"
+      ]
+    },
+    {
+      "Name": "Amcache Parser",
+      "Description": "Parses AMCache with YARA + signatures",
+      "Category": "orbdiff",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/Orbdiff/AmcacheParser/releases/latest/download/AmcacheParser.exe"
+      ]
+    },
+    {
+      "Name": "Journal Parser",
+      "Description": "Parses NTFS USNJournal entries",
+      "Category": "orbdiff",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/Orbdiff/JournalParser/releases/latest/download/JournalParser.exe"
+      ]
+    },
+    {
+      "Name": "Check Deleted USN",
+      "Description": "Compares USN timestamp vs boot time",
+      "Category": "orbdiff",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/Orbdiff/CheckDeletedUSN/releases/latest/download/CheckDeletedUSN.exe"
+      ]
+    },
+    {
+      "Name": "Fileless",
+      "Description": "Detect fileless via eventlog + memdump",
+      "Category": "orbdiff",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/Orbdiff/Fileless/releases/latest/download/fileless.exe"
+      ]
+    },
+    {
+      "Name": "JAR Parser",
+      "Description": "Parses JAR prefetch, DcomLaunch strings, etc",
+      "Category": "orbdiff",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/Orbdiff/JARParser/releases/latest/download/JARParser.exe"
+      ]
+    },
+    {
+      "Name": "PF Trace",
+      "Description": "Rundll32/Regsvr32 prefetch analysis",
+      "Category": "orbdiff",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/Orbdiff/PFTrace/releases/latest/download/PFTrace.exe"
+      ]
+    },
+    {
+      "Name": "InjGen",
+      "Description": "Detects JNI/JVMTI memory injections",
+      "Category": "orbdiff",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/Orbdiff/InjGen/releases/latest/download/InjGen.exe"
+      ]
+    },
+    {
+      "Name": "DPS Analyzer",
+      "Description": "Analyzes DPS memory",
+      "Category": "orbdiff",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/Orbdiff/DPS-Analyzer/releases/latest/download/dpsanalyzer.exe"
+      ]
+    },
+    {
+      "Name": "USB Detector",
+      "Description": "Detects USB device history",
+      "Category": "orbdiff",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/Orbdiff/USBDetector/releases/latest/download/USBDetector.exe"
+      ]
+    },
+    {
+      "Name": "User Assist View",
+      "Description": "Parser UserAssist artifact",
+      "Category": "orbdiff",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/Orbdiff/UserAssistView/releases/latest/download/UserAssistView.exe"
+      ]
+    },
+    {
+      "Name": "Strings Parser",
+      "Description": "Strings + YARA + signatures scanner",
+      "Category": "orbdiff",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/Orbdiff/StringsParser/releases/download/v1.2/stringsparser1.2b.exe"
+      ]
+    },
+    {
+      "Name": "Bam Check Restart",
+      "Description": "Detect the date of creation of the BAM",
+      "Category": "orbdiff",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/Orbdiff/BAM-CheckRestart/releases/download/v2.0.2/BAMCheckRestart.exe"
+      ]
+    },
+    {
+      "Name": "Activities Cache execution",
+      "Description": "Gets the execution of files using the activitiescache.db",
+      "Category": "spokwn",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/spokwn/ActivitiesCache-execution/releases/download/v0.6.5/ActivitiesCacheParser.exe"
+      ]
+    },
+    {
+      "Name": "BAM Parser",
+      "Description": "parses the BAM forensic artefact",
+      "Category": "spokwn",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/spokwn/BAM-parser/releases/download/v1.2.9/BAMParser.exe"
+      ]
+    },
+    {
+      "Name": "Bam Deleted Keys",
+      "Description": "Gathers BAM deleted keys by comparing them with the hives keys.",
+      "Category": "spokwn",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/spokwn/BamDeletedKeys/releases/download/v1.0/BamDeletedKeys.exe"
+      ]
+    },
+    {
+      "Name": "Journal Trace",
+      "Description": "Parses NTFS journal entries",
+      "Category": "spokwn",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/spokwn/JournalTrace/releases/download/1.2/JournalTrace.exe"
+      ]
+    },
+    {
+      "Name": "Pca Svc Executed",
+      "Description": "pcasvc-executed is my fork of zack-srcs service-execution",
+      "Category": "spokwn",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/spokwn/pcasvc-executed/releases/download/v0.8.7/PcaSvcExecuted.exe"
+      ]
+    },
+    {
+      "Name": "Espouken Tool",
+      "Description": "A lot of tools",
+      "Category": "spokwn",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/spokwn/Tool/releases/download/v1.1.3/espouken.exe"
+      ]
+    },
+    {
+      "Name": "Process Parser",
+      "Description": "Parses processes using xxstrings",
+      "Category": "spokwn",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/spokwn/process-parser/releases/download/v0.5.5/ProcessParser.exe"
+      ]
+    },
+    {
+      "Name": "Paths Parser",
+      "Description": "Parses info about paths on a .txt",
+      "Category": "spokwn",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/spokwn/PathsParser/releases/download/v1.2/PathsParser.exe"
+      ]
+    },
+    {
+      "Name": "Kernel Live Dump Tool",
+      "Description": "Captures live kernel memory dumps",
+      "Category": "spokwn",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/spokwn/KernelLiveDumpTool/releases/latest"
+      ]
+    },
+    {
+      "Name": "Prefetch Parser",
+      "Description": "Parses Windows prefetch files",
+      "Category": "spokwn",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/spokwn/prefetch-parser/releases/latest"
+      ]
+    },
+    {
+      "Name": "Meow Resolver",
+      "Description": "Detector and Resolver tool to detect some shitty bypasses",
+      "Category": "tonynoh",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/MeowTonynoh/MeowResolver/releases/download/v.1.1/MeowResolver.exe"
+      ]
+    },
+    {
+      "Name": "Meow Doomsday Fucker",
+      "Description": "Best Doomsday Finder ",
+      "Category": "tonynoh",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/MeowTonynoh/MeowDoomsdayFucker/releases/download/V.1.5/MeowDoomsdayFucker.exe"
+      ]
+    },
+    {
+      "Name": "Meow Client Fucker",
+      "Description": "2nd Best Scanner !",
+      "Category": "tonynoh",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/MeowTonynoh/MeowClientFucker/releases/download/v1.0/MeowClientFucker.exe"
+      ]
+    },
+    {
+      "Name": "Meow Imports Checker",
+      "Description": "The best file checker !",
+      "Category": "tonynoh",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/MeowTonynoh/MeowImportsChecker/releases/download/MeowImportsChecker/MeowImportsChecker.exe"
+      ]
+    },
+    {
+      "Name": "Meow Novoware Fucker",
+      "Description": "Detects Novoware cheat artifacts",
+      "Category": "tonynoh",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/MeowTonynoh/MeowNovowareFucker/releases/latest"
+      ]
+    },
+    {
+      "Name": "PSHunter",
+      "Description": "Hunts suspicious PowerShell activity",
+      "Category": "praiselily",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/praiselily/PSHunter/releases/latest"
+      ]
+    },
+    {
+      "Name": "AltDetector",
+      "Description": "Detects alternate account artifacts",
+      "Category": "praiselily",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/praiselily/AltDetector/releases/latest"
+      ]
+    },
+    {
+      "Name": "RL ModAnalyzer",
+      "Description": "Analyzes mod files for cheat indicators",
+      "Category": "redlotus",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/ItzIceHere/RedLotus-Mod-Analyzer/releases/latest"
+      ]
+    },
+    {
+      "Name": "RL TaskSentinel",
+      "Description": "Monitors scheduled tasks for anomalies",
+      "Category": "redlotus",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/ItzIceHere/RedLotus-Task-Sentinel/releases/latest"
+      ]
+    },
+    {
+      "Name": "RL AltChecker",
+      "Description": "Checks for alternate account indicators",
+      "Category": "redlotus",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/ItzIceHere/RedLotusAltChecker/releases/latest"
+      ]
+    },
+    {
+      "Name": "Amcache Parser++",
+      "Description": "High-performance Amcache parser with YARA + VirusTotal",
+      "Category": "detectac",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/detect-ac/Detect.ac-Free-Tools/releases/download/FreeTools/AmcacheParser++.exe"
+      ]
+    },
+    {
+      "Name": "Autoruns++",
+      "Description": "Rebuilt Autoruns alternative with USN monitoring and signature verification",
+      "Category": "detectac",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/detect-ac/Detect.ac-Free-Tools/releases/download/FreeTools/Autoruns++.exe"
+      ]
+    },
+    {
+      "Name": "Bam Parser++",
+      "Description": "BAM execution history with YARA engine and tamper detection",
+      "Category": "detectac",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/detect-ac/Detect.ac-Free-Tools/releases/download/FreeTools/BamParser++.exe"
+      ]
+    },
+    {
+      "Name": "Browser Downloads View++",
+      "Description": "Multi-browser download history with USN modification highlighting",
+      "Category": "detectac",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/detect-ac/Detect.ac-Free-Tools/releases/download/FreeTools/BrowserDownloadsView++.exe"
+      ]
+    },
+    {
+      "Name": "Browsing History View++",
+      "Description": "Multi-browser history with suspicious domain flagging + VT links",
+      "Category": "detectac",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/detect-ac/Detect.ac-Free-Tools/releases/download/FreeTools/BrowsingHistoryView++.exe"
+      ]
+    },
+    {
+      "Name": "Crashed File Viewer++",
+      "Description": "Unified view of Windows crash artifacts with USN highlighting",
+      "Category": "detectac",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/detect-ac/Detect.ac-Free-Tools/releases/download/FreeTools/CrashedFileViewer++.exe"
+      ]
+    },
+    {
+      "Name": "Journal Trace++",
+      "Description": "USN Journal analysis with bypass detections and filtering",
+      "Category": "detectac",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/detect-ac/Detect.ac-Free-Tools/releases/download/FreeTools/JournalTrace++.exe"
+      ]
+    },
+    {
+      "Name": "Kernel Live Dump++",
+      "Description": "Dumps Kernel/User-mode RAM with filterable string results",
+      "Category": "detectac",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/detect-ac/Detect.ac-Free-Tools/releases/download/FreeTools/KernelLiveDump++.exe"
+      ]
+    },
+    {
+      "Name": "MFT Explorer++",
+      "Description": "Defined $MFT view with suspicious ADS identification",
+      "Category": "detectac",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/detect-ac/Detect.ac-Free-Tools/releases/download/FreeTools/MFTExplorer++.exe"
+      ]
+    },
+    {
+      "Name": "Paths Parser++",
+      "Description": "Paths parser GUI with YARA support and a USN journal viewer",
+      "Category": "detectac",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/detect-ac/Detect.ac-Free-Tools/releases/download/FreeTools/PathsParser++.exe"
+      ]
+    },
+    {
+      "Name": "PowerShell Parser++",
+      "Description": "Scrapes PowerShell history artifacts with bypass detection",
+      "Category": "detectac",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/detect-ac/Detect.ac-Free-Tools/releases/download/FreeTools/PowerShellParser++.exe"
+      ]
+    },
+    {
+      "Name": "Saved Files Viewer++",
+      "Description": "Shows every file saved to disk with cross-referenced timestamps",
+      "Category": "detectac",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/detect-ac/Detect.ac-Free-Tools/releases/download/FreeTools/SavedFilesViewer++.exe"
+      ]
+    },
+    {
+      "Name": "SRUM Explorer++",
+      "Description": "Maps file paths and services from SRUM with YARA + USN tracking",
+      "Category": "detectac",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/detect-ac/Detect.ac-Free-Tools/releases/download/FreeTools/SRUMExplorer++.exe"
+      ]
+    },
+    {
+      "Name": "String Explorer++",
+      "Description": "Navigate an exe",
+      "Category": "detectac",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/detect-ac/Detect.ac-Free-Tools/releases/download/FreeTools/StringExplorer++.exe"
+      ]
+    },
+    {
+      "Name": "USB Deview++",
+      "Description": "Aggregated USB device logs cross-referenced against DeviceHunt",
+      "Category": "detectac",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/detect-ac/Detect.ac-Free-Tools/releases/download/FreeTools/USBDeview++.exe"
+      ]
+    },
+    {
+      "Name": "Win Prefetch View++",
+      "Description": "WinPrefetchView with bypass detections and YARA rule support",
+      "Category": "detectac",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/detect-ac/Detect.ac-Free-Tools/releases/download/FreeTools/WinPrefetchView++.exe"
+      ]
+    },
+    {
+      "Name": "Full Event Log View",
+      "Description": "View Windows event logs",
+      "Category": "nirsoft",
+      "Kind": "Download",
+      "Links": [
+        "https://www.nirsoft.net/utils/fulleventlogview-x64.zip"
+      ]
+    },
+    {
+      "Name": "Network Usage View",
+      "Description": "Monitor network usage",
+      "Category": "nirsoft",
+      "Kind": "Download",
+      "Links": [
+        "https://www.nirsoft.net/utils/networkusageview-x64.zip"
+      ]
+    },
+    {
+      "Name": "Browser Downloads View",
+      "Description": "View browser download history",
+      "Category": "nirsoft",
+      "Kind": "Download",
+      "Links": [
+        "https://www.nirsoft.net/utils/browserdownloadsview-x64.zip"
+      ]
+    },
+    {
+      "Name": "Alternate Stream View",
+      "Description": "View NTFS alternate data streams",
+      "Category": "nirsoft",
+      "Kind": "Download",
+      "Links": [
+        "https://www.nirsoft.net/utils/alternatestreamview-x64.zip"
+      ]
+    },
+    {
+      "Name": "USB Deview",
+      "Description": "Manage USB devices",
+      "Category": "nirsoft",
+      "Kind": "Download",
+      "Links": [
+        "https://www.nirsoft.net/utils/usbdeview-x64.zip"
+      ]
+    },
+    {
+      "Name": "Open Save Files View",
+      "Description": "View Open/Save dialog history",
+      "Category": "nirsoft",
+      "Kind": "Download",
+      "Links": [
+        "https://www.nirsoft.net/utils/opensavefilesview-x64.zip"
+      ]
+    },
+    {
+      "Name": "Executed Programs List",
+      "Description": "List executed programs",
+      "Category": "nirsoft",
+      "Kind": "Download",
+      "Links": [
+        "https://www.nirsoft.net/utils/executedprogramslist.zip"
+      ]
+    },
+    {
+      "Name": "Task Scheduler View",
+      "Description": "View scheduled tasks",
+      "Category": "nirsoft",
+      "Kind": "Download",
+      "Links": [
+        "https://www.nirsoft.net/utils/taskschedulerview-x64.zip"
+      ]
+    },
+    {
+      "Name": "Jump Lists View",
+      "Description": "View Windows Jump Lists",
+      "Category": "nirsoft",
+      "Kind": "Download",
+      "Links": [
+        "https://www.nirsoft.net/utils/jumplistsview.zip"
+      ]
+    },
+    {
+      "Name": "Win Prefetch View",
+      "Description": "View Windows Prefetch files",
+      "Category": "nirsoft",
+      "Kind": "Download",
+      "Links": [
+        "https://www.nirsoft.net/utils/winprefetchview-x64.zip"
+      ]
+    },
+    {
+      "Name": "Reg Scanner",
+      "Description": "Advanced Registry scanner",
+      "Category": "nirsoft",
+      "Kind": "Download",
+      "Links": [
+        "https://www.nirsoft.net/utils/regscanner-x64.zip"
+      ]
+    },
+    {
+      "Name": "ShellBags View",
+      "Description": "View ShellBags entries",
+      "Category": "nirsoft",
+      "Kind": "Download",
+      "Links": [
+        "https://www.nirsoft.net/utils/shellbagsview.zip"
+      ]
+    },
+    {
+      "Name": "Computer Activity View",
+      "Description": "Timeline of computer activity events",
+      "Category": "nirsoft",
+      "Kind": "Link",
+      "Links": [
+        "https://www.nirsoft.net/utils/computer_activity_view.html"
+      ]
+    },
+    {
+      "Name": "Amcache Parser",
+      "Description": "Parse Amcache.hve",
+      "Category": "ericzimmerman",
+      "Kind": "Download",
+      "Links": [
+        "https://download.ericzimmermanstools.com/net9/AmcacheParser.zip"
+      ]
+    },
+    {
+      "Name": "bstrings",
+      "Description": "String extractor",
+      "Category": "ericzimmerman",
+      "Kind": "Download",
+      "Links": [
+        "https://download.ericzimmermanstools.com/net9/bstrings.zip"
+      ]
+    },
+    {
+      "Name": "EvtxECmd",
+      "Description": "Event log parser",
+      "Category": "ericzimmerman",
+      "Kind": "Download",
+      "Links": [
+        "https://download.ericzimmermanstools.com/net9/EvtxECmd.zip"
+      ]
+    },
+    {
+      "Name": "Jump List Explorer",
+      "Description": "Jump List explorer",
+      "Category": "ericzimmerman",
+      "Kind": "Download",
+      "Links": [
+        "https://download.ericzimmermanstools.com/net9/JumpListExplorer.zip"
+      ]
+    },
+    {
+      "Name": "JLECmd",
+      "Description": "Parses Jump List files from the command line",
+      "Category": "ericzimmerman",
+      "Kind": "Download",
+      "Links": [
+        "https://download.ericzimmermanstools.com/net9/JLECmd.zip"
+      ]
+    },
+    {
+      "Name": "MFTECmd",
+      "Description": "MFT parser",
+      "Category": "ericzimmerman",
+      "Kind": "Download",
+      "Links": [
+        "https://download.ericzimmermanstools.com/net9/MFTECmd.zip"
+      ]
+    },
+    {
+      "Name": "PECmd",
+      "Description": "Prefetch parser",
+      "Category": "ericzimmerman",
+      "Kind": "Download",
+      "Links": [
+        "https://download.ericzimmermanstools.com/net9/PECmd.zip"
+      ]
+    },
+    {
+      "Name": "Recent File Cache Parser",
+      "Description": "Parses RecentFileCache.bcf artifacts",
+      "Category": "ericzimmerman",
+      "Kind": "Download",
+      "Links": [
+        "https://download.ericzimmermanstools.com/net9/RecentFileCacheParser.zip"
+      ]
+    },
+    {
+      "Name": "Registry Explorer",
+      "Description": "Registry viewer",
+      "Category": "ericzimmerman",
+      "Kind": "Download",
+      "Links": [
+        "https://download.ericzimmermanstools.com/net9/RegistryExplorer.zip"
+      ]
+    },
+    {
+      "Name": "ShellBags Explorer",
+      "Description": "ShellBags viewer",
+      "Category": "ericzimmerman",
+      "Kind": "Download",
+      "Links": [
+        "https://download.ericzimmermanstools.com/net9/ShellBagsExplorer.zip"
+      ]
+    },
+    {
+      "Name": "SrumECmd",
+      "Description": "SRUM parser",
+      "Category": "ericzimmerman",
+      "Kind": "Download",
+      "Links": [
+        "https://download.ericzimmermanstools.com/net9/SrumECmd.zip"
+      ]
+    },
+    {
+      "Name": "Timeline Explorer",
+      "Description": "Timeline explorer",
+      "Category": "ericzimmerman",
+      "Kind": "Download",
+      "Links": [
+        "https://download.ericzimmermanstools.com/net9/TimelineExplorer.zip"
+      ]
+    },
+    {
+      "Name": "Jarabel",
+      "Description": "Locate all .jar files (or most of them) on a computer",
+      "Category": "others",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/nay-cat/Jarabel/releases/download/light/Jarabel.Light.exe"
+      ]
+    },
+    {
+      "Name": "Luyten",
+      "Description": "Open Source Java Decompiler Gui for Procyon",
+      "Category": "others",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/deathmarine/Luyten/releases/download/v0.5.4_Rebuilt_with_Latest_depenencies/luyten-0.5.4.exe"
+      ]
+    },
+    {
+      "Name": "VM Aware",
+      "Description": "Advanced VM detection library and tool",
+      "Category": "others",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/NotRequiem/VMAware/releases/download/v2.8.0/vmaware.exe"
+      ]
+    },
+    {
+      "Name": "NTFS Parser",
+      "Description": "Forensics tool for NTFS",
+      "Category": "others",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/thewhiteninja/ntfstool/releases/download/v1.7/ntfstool.x64.exe"
+      ]
+    },
+    {
+      "Name": "Hayabusa",
+      "Description": "Threat hunting and fast forensics timeline generator",
+      "Category": "others",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/Yamato-Security/hayabusa/releases/download/v3.10.0/hayabusa-3.10.0-all-platforms.zip"
+      ]
+    },
+    {
+      "Name": "Everything",
+      "Description": "Locate files and folders by name instantly.",
+      "Category": "others",
+      "Kind": "Download",
+      "Links": [
+        "https://www.voidtools.com/Everything-1.4.1.1032.x64-Setup.exe"
+      ]
+    },
+    {
+      "Name": "WinPrefetchView",
+      "Description": "NirSoft Prefetch (.pf) viewer — paths, run count, loaded modules",
+      "Category": "nirsoft",
+      "Kind": "Download",
+      "Links": [
+        "https://www.nirsoft.net/utils/win_prefetch_view.html"
+      ]
+    },
+    {
+      "Name": "CachedProgramsList",
+      "Description": "Shows programs/installers from Windows execution cache",
+      "Category": "others",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/ponei/CachedProgramsList/releases/tag/1.1"
+      ]
+    },
+    {
+      "Name": "BinText",
+      "Description": "Extract ASCII/Unicode/resource strings from binaries",
+      "Category": "others",
+      "Kind": "Download",
+      "Links": [
+        "https://www.majorgeeks.com/files/details/bintext.html"
+      ]
+    },
+    {
+      "Name": "HxD",
+      "Description": "HxD Hex Editor",
+      "Category": "others",
+      "Kind": "Download",
+      "Links": [
+        "https://mh-nexus.de/downloads/HxDSetup.zip"
+      ]
+    },
+    {
+      "Name": "DIE Engine",
+      "Description": "Detects file type, packer, and compiler information",
+      "Category": "others",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/horsicq/DIE-engine/releases"
+      ]
+    },
+    {
+      "Name": "Velociraptor",
+      "Description": "Endpoint DFIR and threat hunting tool",
+      "Category": "others",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/Velocidex/velociraptor/releases/latest"
+      ]
+    },
+    {
+      "Name": "P1AE Javaw",
+      "Description": "Best Javaw scanner",
+      "Category": "others",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/p1aegg/javaw/releases/download/v1.9/P1AE.Javaw.exe"
+      ]
+    },
+    {
+      "Name": "Macro Scanner",
+      "Description": "Lafferr Macro Scanner",
+      "Category": "others",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/Lafferrr/MacroScanner/releases/download/MS/MacroScanner.exe"
+      ]
+    },
+    {
+      "Name": "String Checker",
+      "Description": "Lafferrs Strings Checker",
+      "Category": "others",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/Lafferrr/SSTools/raw/refs/heads/main/SSTools/Strings/LaffersStringsChecker.exe"
+      ]
+    },
+    {
+      "Name": "Java Library Analyzer",
+      "Description": "Lafferr Java Library Analyzer",
+      "Category": "others",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/Lafferrr/SSTools/raw/refs/heads/main/SSTools/JavaLibraryAnalyzer/JavaLibraryAnalyzer.exe",
+        "https://github.com/Lafferrr/SSTools/raw/refs/heads/main/SSTools/JavaLibraryAnalyzer/library_baseline.bin",
+        "https://github.com/Lafferrr/SSTools/raw/refs/heads/main/SSTools/JavaLibraryAnalyzer/natives_baseline.bin"
+      ]
+    },
+    {
+      "Name": "PJ Cheat Scanner Lite",
+      "Description": "String Checker",
+      "Category": "others",
+      "Kind": "Download",
+      "Links": [
+        "https://github.com/gorbgallin/Pj-sCheatScannerLite/releases/download/1.1/PjCheatScannerLite.exe",
+        "https://github.com/gorbgallin/Pj-sCheatScannerLite/releases/download/1.1/cheat_strings.txt"
+      ]
+    },
+    {
+      "Name": "System Informer",
+      "Description": "Canary build — process/strings/KMD; prefer canary for kernel driver",
+      "Category": "others",
+      "Kind": "Download",
+      "Links": [
+        "https://systeminformer.sourceforge.io/canary",
+        "https://github.com/winsiderss/si-builds/releases/download/4.0.26115.206/systeminformer-build-canary-setup.exe"
+      ]
+    },
+    {
+      "Name": "NET 8.0",
+      "Description": "Install .NET 8.0 runtime",
+      "Category": "dependencies",
+      "Kind": "Download",
+      "Links": [
+        "https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-8.0.423-windows-x64-installer"
+      ]
+    },
+    {
+      "Name": "NET 9.0",
+      "Description": "Install .NET 9.0 runtime",
+      "Category": "dependencies",
+      "Kind": "Download",
+      "Links": [
+        "https://builds.dotnet.microsoft.com/dotnet/WindowsDesktop/9.0.11/windowsdesktop-runtime-9.0.11-win-x64.exe"
+      ]
+    },
+    {
+      "Name": "NET 10.0",
+      "Description": "Install .NET 10.0 runtime",
+      "Category": "dependencies",
+      "Kind": "Download",
+      "Links": [
+        "https://builds.dotnet.microsoft.com/dotnet/WindowsDesktop/10.0.10/windowsdesktop-runtime-10.0.10-win-x64.exe"
+      ]
+    },
+    {
+      "Name": "VSRedist",
+      "Description": "Install Visual C++ Redistributable",
+      "Category": "dependencies",
+      "Kind": "Download",
+      "Links": [
+        "https://aka.ms/vc14/vc_redist.x64.exe"
+      ]
+    },
+    {
+      "Name": "Running Processes",
+      "Description": "Lists all running processes",
+      "Category": "scripts",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Get-Process | Sort-Object CPU -Descending | Format-Table Name,ID,CPU,WorkingSet -AutoSize"
+    },
+    {
+      "Name": "Services Checker",
+      "Description": "Runs Nicc/services-checker from GitHub",
+      "Category": "scripts",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; Invoke-Expression (Invoke-RestMethod "
+    },
+    {
+      "Name": "Zeezy Services",
+      "Description": "Runs zeezyexe services checker",
+      "Category": "scripts",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; Invoke-Expression (Invoke-RestMethod "
+    },
+    {
+      "Name": "Doomsday Finder",
+      "Description": "Runs zedoonvm1 DoomsDayDetector script",
+      "Category": "scripts",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; Invoke-Expression (Invoke-RestMethod "
+    },
+    {
+      "Name": "All In One",
+      "Description": "Runs Enr1c0o all-in-one PowerShell screenshare script",
+      "Category": "scripts",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; Invoke-Expression (Invoke-RestMethod "
+    },
+    {
+      "Name": "P1ae",
+      "Description": "Runs p1aegg mod analyzer",
+      "Category": "scripts",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; Invoke-Expression (Invoke-RestMethod "
+    },
+    {
+      "Name": "JAR Parser",
+      "Description": "Parses JAR files",
+      "Category": "scripts",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; Invoke-Expression (Invoke-RestMethod "
+    },
+    {
+      "Name": "Fileless Bypass Detection",
+      "Description": "Detects fileless bypass techniques",
+      "Category": "scripts",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; Invoke-Expression (Invoke-RestMethod "
+    },
+    {
+      "Name": "Macro Scanner",
+      "Description": "Scans for mouse software macros (zeezy)",
+      "Category": "scripts",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; Invoke-Expression (Invoke-RestMethod "
+    },
+    {
+      "Name": "ClassLoader Dump",
+      "Description": "Dumps ClassLoader data",
+      "Category": "scripts",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; Invoke-Expression (Invoke-RestMethod "
+    },
+    {
+      "Name": "Yarp",
+      "Description": "Runs the working mod analyzer command",
+      "Category": "scripts",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "powershell Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass && powershell Invoke-Expression (Invoke-RestMethod https://raw.githubusercontent.com/p1aegg/powershell/refs/heads/main/modanalyzer.ps1)"
+    },
+    {
+      "Name": "Meow Mod Analyzer",
+      "Description": "Runs MeowTonynoh mod analyzer",
+      "Category": "scripts",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; Invoke-Expression (Invoke-RestMethod "
+    },
+    {
+      "Name": "Prefetch Integrity Analyzer",
+      "Description": "Analyzes prefetch integrity (RedLotus)",
+      "Category": "scripts",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; Invoke-Expression (Invoke-RestMethod "
+    },
+    {
+      "Name": "Lily Services",
+      "Description": "Runs PraiseLilys services checker",
+      "Category": "scripts",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; Invoke-Expression (Invoke-RestMethod "
+    },
+    {
+      "Name": "Lily Services Enabler",
+      "Description": "Runs services enabler",
+      "Category": "scripts",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; Invoke-Expression (Invoke-RestMethod "
+    },
+    {
+      "Name": "WeHateFakers",
+      "Description": "Checks hotspot and tethering logs",
+      "Category": "scripts",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; Invoke-Expression (Invoke-RestMethod "
+    },
+    {
+      "Name": "Harddisk Converter",
+      "Description": "Converts hard disk identifiers for review",
+      "Category": "scripts",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; Invoke-Expression (Invoke-RestMethod "
+    },
+    {
+      "Name": "PraiseLily Services",
+      "Description": "Lists and analyzes running services",
+      "Category": "scripts",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; Invoke-Expression (Invoke-RestMethod "
+    },
+    {
+      "Name": "DQRKIS Fucker",
+      "Description": "Runs cheesecatlol DQRKIS artifact checker",
+      "Category": "scripts",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; Invoke-Expression (Invoke-RestMethod "
+    },
+    {
+      "Name": "MacroDetector",
+      "Description": "Detects macro and clicker software traces",
+      "Category": "scripts",
+      "Kind": "Script",
+      "Links": [],
+      "Command": "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; Invoke-Expression (Invoke-RestMethod "
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AssemblyName>SchwarzahnTools</AssemblyName>
+    <RootNamespace>SchwarzahnToolsHub</RootNamespace>
+    <Version>1.0.0</Version>
+    <Product>Schwarzahn Tools</Product>
+    <Company>Schwarzahn</Company>
+    <Description>SS tool hub by Schwarzahn</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.2.5" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.2.5" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.5" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.5" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.2.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\ToolsCatalog.json" Link="ToolsCatalog.json" />
+    <None Include="..\..\ToolsCatalog.json" CopyToOutputDirectory="PreserveNewest" Link="ToolsCatalog.json" />
+  </ItemGroup>
+</Project>
